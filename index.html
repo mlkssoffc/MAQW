@@ -43,10 +43,12 @@ html.noanim *{animation:none!important;transition:none!important}
 .logo svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .brand{font-size:27px;font-weight:800;letter-spacing:2px;line-height:1;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 
-#auth{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
-#auth .card{width:100%;max-width:380px;padding:26px;border-radius:34px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 70px rgba(124,58,237,.3),0 20px 50px var(--sh)}
-#auth h1{margin:0 0 2px;font-size:34px;font-weight:800;letter-spacing:2px;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-#err{color:#fda4af;font-size:14px;min-height:20px}
+#auth,#ver,#splash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
+#splash{background:var(--bg0);z-index:50}#splash .logo{width:72px;height:72px;border-radius:24px;animation:pl 1.2s ease-in-out infinite}#splash .logo svg{width:36px;height:36px}
+@keyframes pl{50%{transform:scale(1.1)}}
+#auth .card,#ver .card{width:100%;max-width:380px;padding:26px;border-radius:34px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 70px rgba(124,58,237,.3),0 20px 50px var(--sh)}
+#auth h1,#ver h1{margin:0 0 2px;font-size:34px;font-weight:800;letter-spacing:2px;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+#err{color:#fda4af;font-size:14px;min-height:20px}#ver h1{font-size:26px;letter-spacing:.5px}#verr{min-height:20px}
 #sw{background:none;border:0;color:var(--mu);padding:6px}
 
 #app{position:absolute;inset:0;display:none}
@@ -241,18 +243,30 @@ html[data-wall=dots] #chatv{background:radial-gradient(var(--dot) 1.6px,transpar
 @media(min-width:800px){#app,#chatv,#sp{left:50%;right:auto;width:560px;transform:translateX(-50%)}#chatv{border-left:1px solid var(--bd);border-right:1px solid var(--bd)}}
 </style></head><body>
 
-<div id="auth"><div class="card lq col">
+<div id="splash"><div class="logo"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div></div>
+
+<div id="auth" style="display:none"><form id="authf" class="card lq col" autocomplete="on">
   <div class="logo"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div>
   <h1>MAQW</h1><div class="sub">Войди или создай аккаунт</div>
   <div id="regf" class="col" style="display:none">
     <input id="nm" class="in" placeholder="Имя" maxlength="30" autocomplete="off">
     <input id="un" class="in" placeholder="@юзернейм (латиница, цифры, _)" maxlength="21" autocapitalize="none" autocomplete="off">
   </div>
-  <input id="em" class="in" type="email" placeholder="Почта" autocomplete="email">
-  <input id="pw" class="in" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
+  <input id="em" name="email" class="in" type="email" placeholder="Почта" autocomplete="username">
+  <input id="pw" name="password" class="in" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
   <div id="err"></div>
-  <button id="go" class="btn">Войти</button>
-  <button id="sw"></button>
+  <button id="go" class="btn" type="submit">Войти</button>
+  <button id="sw" type="button"></button>
+</form></div>
+
+<div id="ver" style="display:none"><div class="card lq col">
+  <div class="logo" style="font-size:24px">✉️</div>
+  <h1>Подтверди почту</h1>
+  <div class="sub" id="vtxt"></div>
+  <div id="verr" class="sub"></div>
+  <button id="vchk" class="btn" type="button">Я подтвердил(а)</button>
+  <button id="vres" class="btn g" type="button">Отправить письмо ещё раз</button>
+  <button id="vout" class="btn g" type="button">Выйти</button>
 </div></div>
 
 <div id="app">
@@ -307,7 +321,7 @@ html[data-wall=dots] #chatv{background:radial-gradient(var(--dot) 1.6px,transpar
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,sendPasswordResetEmail,deleteUser,EmailAuthProvider,reauthenticateWithCredential} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {initializeAuth,indexedDBLocalPersistence,browserLocalPersistence,browserSessionPersistence,sendEmailVerification,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,sendPasswordResetEmail,deleteUser,EmailAuthProvider,reauthenticateWithCredential} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,collection,addDoc,query,where,orderBy,limit,limitToLast,onSnapshot,serverTimestamp,runTransaction,arrayUnion,arrayRemove,increment,deleteField,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app=initializeApp({
@@ -318,7 +332,8 @@ const app=initializeApp({
   messagingSenderId:"856285064750",
   appId:"1:856285064750:web:2e2ee80e87200ba41b39bf",
   measurementId:"G-3M9LBX585W"});
-const auth=getAuth(app),db=getFirestore(app);
+const auth=initializeAuth(app,{persistence:[indexedDBLocalPersistence,browserLocalPersistence,browserSessionPersistence]}),db=getFirestore(app);
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
 
 /* ================= утилиты ================= */
 const E=id=>document.getElementById(id);
@@ -389,7 +404,7 @@ E("vx").onclick=()=>E("viewer").style.display="none";
 
 /* ================= вход / регистрация ================= */
 const aerr=t=>E("err").textContent=t||"";
-function setMode(m){mode=m;E("regf").style.display=m==="reg"?"flex":"none";E("go").textContent=m==="reg"?"Создать аккаунт":"Войти";E("sw").textContent=m==="reg"?"Уже есть аккаунт? Войти":"Нет аккаунта? Регистрация";aerr("")}
+function setMode(m){mode=m;E("regf").style.display=m==="reg"?"flex":"none";E("go").textContent=m==="reg"?"Создать аккаунт":"Войти";E("sw").textContent=m==="reg"?"Уже есть аккаунт? Войти":"Нет аккаунта? Регистрация";E("pw").autocomplete=m==="reg"?"new-password":"current-password";aerr("")}
 setMode("login");
 E("sw").onclick=()=>setMode(mode==="reg"?"login":"reg");
 async function reg(em,pw){
@@ -405,9 +420,10 @@ async function reg(em,pw){
       t.set(doc(db,"users",c.user.uid),{username:un,name:nm||un,bio:"",bday:"",avatar:"",banner:"",contacts:[],hideSeen:false,lastSeen:serverTimestamp(),createdAt:serverTimestamp()});
     });
   }catch(e){await deleteUser(c.user).catch(()=>{});registering=false;throw e.message==="taken"?"Юзернейм @"+un+" уже занят":e}
+  try{await sendEmailVerification(c.user)}catch{}
   registering=false;await boot(c.user);
 }
-E("go").onclick=async()=>{
+E("authf").onsubmit=async ev=>{ev.preventDefault();
   const em=E("em").value.trim(),pw=E("pw").value;
   if(!em||!pw)return aerr("Введи почту и пароль");
   E("go").disabled=true;aerr("");
@@ -415,15 +431,31 @@ E("go").onclick=async()=>{
   catch(e){aerr(typeof e==="string"?e:AE[e.code]||e.code||e.message)}
   E("go").disabled=false;
 };
-function teardown(){unChats&&unChats();unChats=null;cur&&closeChat();clearInterval(hb);chats.clear();listData=[];Object.keys(cache).forEach(k=>delete cache[k]);uid="";prof=null;initial=true;deep=false;document.title="MAQW";E("app").style.display="none";E("chatv").style.display="none";closeOv();closePage();E("auth").style.display="flex"}
+function teardown(){unChats&&unChats();unChats=null;cur&&closeChat();clearInterval(hb);chats.clear();listData=[];Object.keys(cache).forEach(k=>delete cache[k]);uid="";prof=null;initial=true;deep=false;document.title="MAQW";E("app").style.display="none";E("chatv").style.display="none";closeOv();closePage();clearInterval(vt);E("ver").style.display="none";E("splash").style.display="none";E("auth").style.display="flex"}
 onAuthStateChanged(auth,u=>{if(registering)return;if(u)boot(u);else teardown()});
+const NEWFROM=new Date("2026-10-27T00:00:00+03:00").getTime();
+const needVer=u=>!u.emailVerified&&new Date(u.metadata.creationTime).getTime()>=NEWFROM;
+let vt=null;
+function showVer(u){
+  E("splash").style.display="none";E("auth").style.display="none";E("app").style.display="none";E("ver").style.display="flex";
+  E("vtxt").textContent="Мы отправили письмо со ссылкой на "+u.email+". Нажми на ссылку в письме (загляни и в «Спам»), потом вернись сюда.";
+  E("verr").textContent="";clearInterval(vt);vt=setInterval(()=>chk(u,true),4000);
+}
+async function chk(u,quiet){
+  try{await u.reload();if(u.emailVerified){clearInterval(vt);E("ver").style.display="none";await boot(u)}else if(!quiet)E("verr").textContent="Почта пока не подтверждена. Нажми на ссылку в письме."}
+  catch(e){if(!quiet)E("verr").textContent="Ошибка: "+(e.code||e.message)}
+}
+E("vchk").onclick=()=>auth.currentUser&&chk(auth.currentUser);
+E("vres").onclick=async()=>{try{await sendEmailVerification(auth.currentUser);E("verr").textContent="Письмо отправлено ещё раз."}catch(e){E("verr").textContent=e.code==="auth/too-many-requests"?"Слишком часто. Подожди пару минут.":"Ошибка: "+e.code}};
+E("vout").onclick=()=>{clearInterval(vt);E("ver").style.display="none";signOut(auth)};
 async function boot(u){
+  if(needVer(u)){showVer(u);return}
   uid=u.uid;
-  const s=await getDoc(doc(db,"users",uid));
+  let s;try{s=await getDoc(doc(db,"users",uid))}catch(e){E("splash").style.display="none";E("auth").style.display="flex";aerr("Не удалось загрузить аккаунт ("+(e.code||e.message)+"). Проверь интернет и обнови страницу.");return}
   if(!s.exists()){await signOut(auth);return}
   prof=cache[uid]={id:uid,...s.data(),_t:Date.now()};
   Lx={pin:[],mute:[],clr:{},drafts:{},hm:{},...LS.g("maqw_l_"+uid,{})};
-  E("auth").style.display="none";E("app").style.display="block";
+  E("auth").style.display="none";E("splash").style.display="none";E("ver").style.display="none";E("app").style.display="block";
   renderProfile();renderContacts();buildSettings();listenChats();tab("chats");
   clearInterval(hb);hb=setInterval(()=>{beat();if(E("v-chats").classList.contains("on"))drawList()},45000);beat();
   if(!deep){deep=true;const m=location.hash.match(/^#u=([a-z0-9_]+)/);if(m){try{const r=await getDoc(doc(db,"usernames",m[1]));if(r.exists())openProfile(r.data().uid)}catch{}}}
@@ -952,7 +984,8 @@ function pgAbout(){page("О MAQW",b=>{
   c.append(l,h("h3","","MAQW 2.0"),h("div","sub","Свой мессенджер: личные чаты, группы и каналы, фото, видео, музыка, файлы, голосовые. Бесплатно на Firebase и GitHub Pages. Файлы до 6 МБ хранятся прямо в базе."));b.append(c);
 })}
 function pgAcc(){page("Аккаунт и безопасность",b=>{
-  const s=secBox(b),m=h("div","srow col2");m.append(h("div","sub","Почта"),h("b","",(auth.currentUser||{}).email||""));s.append(m);
+  const cu=auth.currentUser||{},s=secBox(b),m=h("div","srow col2");m.append(h("div","sub","Почта"),h("b","",(cu.email||"")+(cu.emailVerified?" ✅":" ⚠️ не подтверждена")));s.append(m);
+  if(!cu.emailVerified)actRow(s,"✉️ Подтвердить почту",async()=>{try{await sendEmailVerification(cu);toast("Письмо со ссылкой отправлено")}catch(e){toast(e.code==="auth/too-many-requests"?"Слишком часто, подожди пару минут":"Ошибка: "+e.code)}});
   actRow(s,"🔑 Сменить пароль по почте",async()=>{try{await sendPasswordResetEmail(auth,auth.currentUser.email);toast("Письмо отправлено на почту")}catch(e){toast("Ошибка: "+e.code)}});
   actRow(s,"🗑 Удалить аккаунт",delAccount,true);
 })}
