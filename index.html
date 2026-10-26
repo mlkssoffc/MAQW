@@ -307,6 +307,20 @@ html{-webkit-text-size-adjust:100%}
 #pin .pb{display:grid;place-items:center;color:var(--a1)}#pin .pb .i{width:16px;height:16px}
 .meta .i{width:12px;height:12px;display:inline-block}
 .av .i{width:52%;height:52%;stroke:#fff}
+
+/* ===== v5 ===== */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+.unh{margin:-6px 8px 0;font-size:.82em;min-height:1.2em;color:var(--mu)}.unh.ok{color:#4ade80}.unh.bad{color:#fca5a5}
+.swb{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.72em;font-weight:700;color:var(--a1);flex:none;padding:9px 11px;border-radius:16px;background:var(--inp);border:1px solid var(--bd)}
+.swb .i{width:22px;height:22px}
+.shead>.grow>.sub:last-child{font-size:.78em}.swb{padding:8px 9px}
+.acr.cur{background:linear-gradient(90deg,var(--inp),transparent)!important}
+.acr .okc{color:#4ade80;display:grid;place-items:center}.acr .okc .i{width:22px;height:22px;stroke-width:2.4}
+#acb{background:none;border:0;color:var(--a1);padding:6px;font-weight:600}
+.grow>.wrap{white-space:normal;overflow:visible}
+.sr2.nc{cursor:default}.sr2.nc:active{background:none}
+.vtag{display:inline-block;align-self:center;margin-top:-4px;padding:3px 12px;border-radius:12px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:.78em;font-weight:700}
 </style></head><body>
 
 <div id="splash"><div class="sp-parts"><i style="--x:8%;--d:0.0s;--s:3px;--t:6.5s"></i><i style="--x:17%;--d:1.8s;--s:2px;--t:5.4s"></i><i style="--x:26%;--d:3.2s;--s:4px;--t:7.2s"></i><i style="--x:35%;--d:0.7s;--s:2px;--t:5.9s"></i><i style="--x:44%;--d:2.6s;--s:3px;--t:6.8s"></i><i style="--x:53%;--d:4.1s;--s:2px;--t:5.2s"></i><i style="--x:62%;--d:1.2s;--s:4px;--t:7.5s"></i><i style="--x:71%;--d:3.6s;--s:3px;--t:6.1s"></i><i style="--x:80%;--d:0.4s;--s:2px;--t:5.7s"></i><i style="--x:88%;--d:2.2s;--s:3px;--t:6.6s"></i><i style="--x:94%;--d:4.6s;--s:2px;--t:5.5s"></i><i style="--x:13%;--d:5.0s;--s:3px;--t:7.0s"></i></div><div class="sp-orb"><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-spin"></span><img src="icons/icon-512.png" alt=""></div><div class="sp-word"><span>M</span><span>A</span><span>Q</span><span>W</span></div><div class="sp-bar"><i></i></div><div id="spmsg"></div></div>
@@ -324,6 +338,7 @@ html{-webkit-text-size-adjust:100%}
   <div id="err"></div>
   <button id="go" class="btn" type="submit">Войти</button>
   <button id="sw" type="button"></button>
+  <button id="acb" type="button" style="display:none"></button>
 </form></div>
 
 <div id="ver" style="display:none"><div class="card lq col">
@@ -392,7 +407,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase
 import {initializeAuth,indexedDBLocalPersistence,browserLocalPersistence,browserSessionPersistence,sendEmailVerification,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,sendPasswordResetEmail,deleteUser,EmailAuthProvider,reauthenticateWithCredential} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,deleteDoc,collection,addDoc,query,where,orderBy,limit,limitToLast,onSnapshot,serverTimestamp,runTransaction,arrayUnion,arrayRemove,increment,deleteField,writeBatch} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const app=initializeApp({
+const FBCFG=({
   apiKey:"AIzaSyDv4xZrK2vNGjad9bjnDqoL_H4ewDzpEKc",
   authDomain:"messenger-42828.firebaseapp.com",
   projectId:"messenger-42828",
@@ -400,6 +415,8 @@ const app=initializeApp({
   messagingSenderId:"856285064750",
   appId:"1:856285064750:web:2e2ee80e87200ba41b39bf",
   measurementId:"G-3M9LBX585W"});
+const SLOT=(()=>{try{const n=+localStorage.getItem("maqw_slot");return n>=0&&n<3?n:0}catch{return 0}})();
+const app=SLOT?initializeApp(FBCFG,"acc"+SLOT):initializeApp(FBCFG);
 const auth=initializeAuth(app,{persistence:[indexedDBLocalPersistence,browserLocalPersistence,browserSessionPersistence]}),db=getFirestore(app);
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
 
@@ -407,7 +424,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 const E=id=>document.getElementById(id);
 const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 /* ===== иконки ===== */
-const ICONS={"chat": "<path d=\"M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\"/><circle cx=\"17\" cy=\"9\" r=\"2.4\"/><path d=\"M17 14c2.6 0 4.5 2 4.5 4.8\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8\"/>", "megaphone": "<path d=\"M3 10v4a1 1 0 001 1h2l5 4V5L6 9H4a1 1 0 00-1 1z\"/><path d=\"M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11\"/>", "bookmark": "<path d=\"M6 3h12v18l-6-4.5L6 21z\"/>", "pin": "<path d=\"M9 3h6l-1 6 3 3v2H7v-2l3-3z\"/><path d=\"M12 14v7\"/>", "bell": "<path d=\"M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z\"/><path d=\"M10 20a2 2 0 004 0\"/>", "bellx": "<path d=\"M8.7 3.7A6 6 0 0118 9c0 2.4.5 4 1.1 5M6.3 6.3C6.1 7.1 6 8 6 9c0 6-2.5 7.5-2.5 7.5H15\"/><path d=\"M10 20a2 2 0 004 0M3 3l18 18\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-4-4\"/>", "more": "<circle cx=\"12\" cy=\"5\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"19\" r=\"1.4\" fill=\"currentColor\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "chev": "<path d=\"M9 5l7 7-7 7\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "trash": "<path d=\"M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6\"/>", "eraser": "<path d=\"M8 20h12M5.5 14.5l8-8a2.1 2.1 0 013 0l2 2a2.1 2.1 0 010 3L11 19H8l-2.5-2.5a1.4 1.4 0 010-2z\"/>", "logout": "<path d=\"M10 4H5v16h5M15 8l4 4-4 4M19 12H9\"/>", "reply": "<path d=\"M9 7L4 12l5 5\"/><path d=\"M4 12h10a6 6 0 016 6v1\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "edit": "<path d=\"M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z\"/><path d=\"M13.5 6.5l4 4\"/>", "forward": "<path d=\"M15 7l5 5-5 5\"/><path d=\"M20 12H10a6 6 0 00-6 6v1\"/>", "eyeoff": "<path d=\"M3 3l18 18M10.6 6.2A9.8 9.8 0 0112 6c5 0 8.5 4.5 9.5 6a15 15 0 01-3.2 3.6M6.5 7.6C4.4 9 3 11 2.5 12c1 1.6 4.5 6 9.5 6 1.5 0 2.8-.4 4-1\"/><path d=\"M9.9 9.9a3 3 0 004.2 4.2\"/>", "image": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.8\"/><path d=\"M21 16l-5-5-9 9\"/>", "camera": "<path d=\"M4 8h3l2-3h6l2 3h3v11H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.6\"/>", "music": "<path d=\"M9 18V6l11-2v12\"/><circle cx=\"6.5\" cy=\"18\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"16\" r=\"2.5\"/>", "file": "<path d=\"M6 3h8l5 5v13H6z\"/><path d=\"M14 3v5h5M9 13h6M9 17h6\"/>", "play": "<path d=\"M7 4.5v15l13-7.5z\" fill=\"currentColor\"/>", "alert": "<path d=\"M12 3l10 18H2z\"/><path d=\"M12 10v5M12 18.2v.1\"/>", "clip": "<path d=\"M20 11.5l-8.2 8.2a5 5 0 01-7-7L13.5 4a3.3 3.3 0 014.7 4.7l-8.6 8.6a1.7 1.7 0 01-2.4-2.4L15 7\"/>", "smile": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 14a4.5 4.5 0 008 0\"/><path d=\"M9 9.5v.1M15 9.5v.1\" stroke-width=\"2.6\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "settings": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z\"/>", "link": "<path d=\"M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1 1\"/><path d=\"M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1-1\"/>", "palette": "<path d=\"M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.7 0-1 .8-1.8 1.9-1.8H17a4 4 0 004-4c0-4.4-4-7.7-9-7.7z\"/><circle cx=\"7.5\" cy=\"11\" r=\"1.1\"/><circle cx=\"10.5\" cy=\"7\" r=\"1.1\"/><circle cx=\"15.5\" cy=\"7.5\" r=\"1.1\"/>", "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"3\"/><path d=\"M8 11V8a4 4 0 018 0v3\"/>", "db": "<ellipse cx=\"12\" cy=\"6\" rx=\"7.5\" ry=\"3\"/><path d=\"M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v6M12 7.5v.1\"/>", "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M11 12l9-9M16 7l3 3M14 9l2 2\"/>", "mail": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3\"/><path d=\"M4 7l8 6 8-6\"/>", "cake": "<path d=\"M4 20h16v-6a2 2 0 00-2-2H6a2 2 0 00-2 2zM4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0\"/><path d=\"M12 12V8M12 5.6c-.9-1-.9-1.5 0-2.6.9 1.1.9 1.6 0 2.6z\"/>", "download": "<path d=\"M12 4v11M7 11l5 5 5-5M5 20h14\"/>", "refresh": "<path d=\"M20 11a8 8 0 00-14-4.5L4 9M4 4v5h5M4 13a8 8 0 0014 4.5L20 15M20 20v-5h-5\"/>", "ban": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M5.6 5.6l12.8 12.8\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>", "down": "<path d=\"M12 5v14M6 13l6 6 6-6\"/>"};
+const ICONS={"check":'<path d="M5 12.5l4.5 4.5L19 7.5"/>',"swap":'<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',"chat": "<path d=\"M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\"/><circle cx=\"17\" cy=\"9\" r=\"2.4\"/><path d=\"M17 14c2.6 0 4.5 2 4.5 4.8\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8\"/>", "megaphone": "<path d=\"M3 10v4a1 1 0 001 1h2l5 4V5L6 9H4a1 1 0 00-1 1z\"/><path d=\"M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11\"/>", "bookmark": "<path d=\"M6 3h12v18l-6-4.5L6 21z\"/>", "pin": "<path d=\"M9 3h6l-1 6 3 3v2H7v-2l3-3z\"/><path d=\"M12 14v7\"/>", "bell": "<path d=\"M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z\"/><path d=\"M10 20a2 2 0 004 0\"/>", "bellx": "<path d=\"M8.7 3.7A6 6 0 0118 9c0 2.4.5 4 1.1 5M6.3 6.3C6.1 7.1 6 8 6 9c0 6-2.5 7.5-2.5 7.5H15\"/><path d=\"M10 20a2 2 0 004 0M3 3l18 18\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-4-4\"/>", "more": "<circle cx=\"12\" cy=\"5\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"19\" r=\"1.4\" fill=\"currentColor\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "chev": "<path d=\"M9 5l7 7-7 7\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "trash": "<path d=\"M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6\"/>", "eraser": "<path d=\"M8 20h12M5.5 14.5l8-8a2.1 2.1 0 013 0l2 2a2.1 2.1 0 010 3L11 19H8l-2.5-2.5a1.4 1.4 0 010-2z\"/>", "logout": "<path d=\"M10 4H5v16h5M15 8l4 4-4 4M19 12H9\"/>", "reply": "<path d=\"M9 7L4 12l5 5\"/><path d=\"M4 12h10a6 6 0 016 6v1\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "edit": "<path d=\"M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z\"/><path d=\"M13.5 6.5l4 4\"/>", "forward": "<path d=\"M15 7l5 5-5 5\"/><path d=\"M20 12H10a6 6 0 00-6 6v1\"/>", "eyeoff": "<path d=\"M3 3l18 18M10.6 6.2A9.8 9.8 0 0112 6c5 0 8.5 4.5 9.5 6a15 15 0 01-3.2 3.6M6.5 7.6C4.4 9 3 11 2.5 12c1 1.6 4.5 6 9.5 6 1.5 0 2.8-.4 4-1\"/><path d=\"M9.9 9.9a3 3 0 004.2 4.2\"/>", "image": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.8\"/><path d=\"M21 16l-5-5-9 9\"/>", "camera": "<path d=\"M4 8h3l2-3h6l2 3h3v11H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.6\"/>", "music": "<path d=\"M9 18V6l11-2v12\"/><circle cx=\"6.5\" cy=\"18\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"16\" r=\"2.5\"/>", "file": "<path d=\"M6 3h8l5 5v13H6z\"/><path d=\"M14 3v5h5M9 13h6M9 17h6\"/>", "play": "<path d=\"M7 4.5v15l13-7.5z\" fill=\"currentColor\"/>", "alert": "<path d=\"M12 3l10 18H2z\"/><path d=\"M12 10v5M12 18.2v.1\"/>", "clip": "<path d=\"M20 11.5l-8.2 8.2a5 5 0 01-7-7L13.5 4a3.3 3.3 0 014.7 4.7l-8.6 8.6a1.7 1.7 0 01-2.4-2.4L15 7\"/>", "smile": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 14a4.5 4.5 0 008 0\"/><path d=\"M9 9.5v.1M15 9.5v.1\" stroke-width=\"2.6\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "settings": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z\"/>", "link": "<path d=\"M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1 1\"/><path d=\"M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1-1\"/>", "palette": "<path d=\"M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.7 0-1 .8-1.8 1.9-1.8H17a4 4 0 004-4c0-4.4-4-7.7-9-7.7z\"/><circle cx=\"7.5\" cy=\"11\" r=\"1.1\"/><circle cx=\"10.5\" cy=\"7\" r=\"1.1\"/><circle cx=\"15.5\" cy=\"7.5\" r=\"1.1\"/>", "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"3\"/><path d=\"M8 11V8a4 4 0 018 0v3\"/>", "db": "<ellipse cx=\"12\" cy=\"6\" rx=\"7.5\" ry=\"3\"/><path d=\"M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v6M12 7.5v.1\"/>", "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M11 12l9-9M16 7l3 3M14 9l2 2\"/>", "mail": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3\"/><path d=\"M4 7l8 6 8-6\"/>", "cake": "<path d=\"M4 20h16v-6a2 2 0 00-2-2H6a2 2 0 00-2 2zM4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0\"/><path d=\"M12 12V8M12 5.6c-.9-1-.9-1.5 0-2.6.9 1.1.9 1.6 0 2.6z\"/>", "download": "<path d=\"M12 4v11M7 11l5 5 5-5M5 20h14\"/>", "refresh": "<path d=\"M20 11a8 8 0 00-14-4.5L4 9M4 4v5h5M4 13a8 8 0 0014 4.5L20 15M20 20v-5h-5\"/>", "ban": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M5.6 5.6l12.8 12.8\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>", "down": "<path d=\"M12 5v14M6 13l6 6 6-6\"/>"};
 const SV=n=>ICONS[n]?'<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+ICONS[n]+'</svg>':"";
 const mkI=(n,c)=>{const e=h("span",c||"");e.innerHTML=SV(n);return e};
 const mkB=(n,c,label)=>{const b=h("button",c||"");b.type="button";b.innerHTML=SV(n);if(label)b.setAttribute("aria-label",label);return b};
@@ -468,6 +485,67 @@ const cache={},chats=new Map(),urls=new Map(),seenAt={};let listData=[];
 let Lx={pin:[],mute:[],clr:{},drafts:{},hm:{}};
 const saveL=()=>LS.s("maqw_l_"+uid,Lx);
 const CH=cid=>doc(db,"chats",cid);
+/* ===== несколько аккаунтов (до 3) ===== */
+const ACC_MAX=3;
+const accs=()=>LS.g("maqw_accs",[]),setAccs=a=>LS.s("maqw_accs",a);
+const rawSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}},rawDel=k=>{try{localStorage.removeItem(k)}catch{}};
+const thumb=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{const c=document.createElement("canvas");c.width=c.height=96;c.getContext("2d").drawImage(i,0,0,96,96);res(c.toDataURL("image/jpeg",.8))};i.onerror=rej;i.src=src});
+let lastAv="";
+async function saveAcc(){
+  if(!uid||!prof)return;
+  const av0=prof.avatar||"",key=av0.length+":"+av0.slice(-30);
+  let th=(accs().find(a=>a.slot===SLOT)||{}).avatar||"";
+  if(!av0)th="";else if(key!==lastAv||!th){try{th=await thumb(av0)}catch{th=""}lastAv=key}
+  const a=accs().filter(x=>x.slot!==SLOT&&x.uid!==uid);
+  a.push({slot:SLOT,uid,name:prof.name,username:prof.username,avatar:th});
+  a.sort((x,y)=>x.slot-y.slot);setAccs(a);
+}
+function switchAcc(slot){rawDel("maqw_prev");rawSet("maqw_slot",String(slot));location.reload()}
+function addAcc(){
+  const l=accs();if(l.length>=ACC_MAX)return toast("Максимум "+ACC_MAX+" аккаунта");
+  const used=new Set(l.map(a=>a.slot)),f=[0,1,2].find(i=>!used.has(i)&&i!==SLOT);
+  if(f==null)return toast("Максимум "+ACC_MAX+" аккаунта");
+  rawSet("maqw_prev",String(SLOT));rawSet("maqw_slot",String(f));location.reload();
+}
+function accSheet(){
+  closeOv();const b=h("div","glass mdl col");b.append(h("h3","","Аккаунты"));
+  const l=accs();
+  l.forEach(a=>{
+    const r=h("div","row glass acr"+(a.slot===SLOT?" cur":""));r.append(av({name:a.name,avatar:a.avatar},46));
+    const m=h("div","grow");m.append(h("b","",a.name),h("div","sub","@"+a.username));r.append(m);
+    if(a.slot===SLOT)r.append(mkI("check","okc"));else r.onclick=()=>switchAcc(a.slot);
+    b.append(r)});
+  if(l.length<ACC_MAX){const add=mkBT("btn g","plus","Добавить аккаунт");add.onclick=addAcc;b.append(add)}
+  else b.append(h("div","sub hint","Максимум "+ACC_MAX+" аккаунта"));
+  const pf=mkBT("btn g","user","Мой профиль");pf.onclick=()=>{closeOv();tab("profile")};b.append(pf);
+  ov(b);
+}
+async function doLogout(){
+  if(!confirm("Выйти из аккаунта @"+prof.username+"?"))return;
+  const cs=SLOT;setAccs(accs().filter(a=>a.slot!==cs));rawDel("maqw_prev");
+  try{await signOut(auth)}catch{}
+  const o=accs()[0];if(o){rawSet("maqw_slot",String(o.slot));location.reload()}
+}
+function showBack(){
+  let p=null;try{p=localStorage.getItem("maqw_prev")}catch{}
+  const has=p!=null&&accs().some(a=>a.slot===+p&&a.slot!==SLOT),b=E("acb");
+  b.style.display=has?"block":"none";
+  if(has){b.textContent="Вернуться к другому аккаунту";b.onclick=()=>switchAcc(+p)}
+}
+
+/* ===== смена юзернейма ===== */
+async function changeUsername(nu){
+  const old=prof.username;
+  await runTransaction(db,async t=>{
+    const r=doc(db,"usernames",nu);
+    if((await t.get(r)).exists()||(await t.get(doc(db,"handles",nu))).exists())throw new Error("taken");
+    t.set(r,{uid});
+    t.update(doc(db,"users",uid),{username:nu});
+  });
+  prof.username=nu;
+  await deleteDoc(doc(db,"usernames",old)).catch(()=>{});
+}
+
 const dmId=o=>[uid,o].sort().join("_");
 const SELF=()=>({...prof,name:"Избранное",icon:"bookmark",self:true});
 
@@ -520,7 +598,7 @@ E("authf").onsubmit=async ev=>{ev.preventDefault();
   catch(e){aerr(typeof e==="string"?e:AE[e.code]||e.code||e.message)}
   E("go").disabled=false;
 };
-function teardown(){unChats&&unChats();unChats=null;cur&&closeChat();clearInterval(hb);chats.clear();listData=[];Object.keys(cache).forEach(k=>delete cache[k]);uid="";prof=null;initial=true;deep=false;document.title="MAQW";E("app").style.display="none";E("chatv").style.display="none";closeOv();closePage();clearInterval(vt);E("ver").style.display="none";hideSplash();E("auth").style.display="flex"}
+function teardown(){unChats&&unChats();unChats=null;cur&&closeChat();clearInterval(hb);chats.clear();listData=[];Object.keys(cache).forEach(k=>delete cache[k]);uid="";prof=null;initial=true;deep=false;document.title="MAQW";E("app").style.display="none";E("chatv").style.display="none";closeOv();closePage();clearInterval(vt);E("ver").style.display="none";hideSplash();E("auth").style.display="flex";showBack()}
 onAuthStateChanged(auth,u=>{if(registering)return;if(u)boot(u);else teardown()});
 const NEWFROM=new Date("2026-10-27T00:00:00+03:00").getTime();
 const needVer=u=>!u.emailVerified&&new Date(u.metadata.creationTime).getTime()>=NEWFROM;
@@ -542,7 +620,7 @@ async function boot(u){
   uid=u.uid;
   let s;try{s=await getDoc(doc(db,"users",uid))}catch(e){hideSplash();E("auth").style.display="flex";aerr("Не удалось загрузить аккаунт ("+(e.code||e.message)+"). Проверь интернет и обнови страницу.");return}
   if(!s.exists()){await signOut(auth);return}
-  prof=cache[uid]={id:uid,...s.data(),_t:Date.now()};
+  prof=cache[uid]={id:uid,...s.data(),_t:Date.now()};rawDel("maqw_prev");
   Lx={pin:[],mute:[],clr:{},drafts:{},hm:{},...LS.g("maqw_l_"+uid,{})};
   E("auth").style.display="none";hideSplash();E("ver").style.display="none";E("app").style.display="block";
   renderProfile();renderContacts();buildSettings();listenChats();tab("chats");
@@ -1012,12 +1090,27 @@ async function setImg(field,file,w,hh){try{const data=await pic(file,w,hh);await
 function editProfile(){
   closeOv();const b=h("div","glass mdl col");b.append(h("h3","","Изменить профиль"));
   const mk=(p,v,m)=>{const i=h("input","in");i.placeholder=p;i.value=v||"";i.maxLength=m;return i};
-  const nm=mk("Имя",prof.name,30),bio=mk("О себе",prof.bio,150),bd=h("input","in");bd.type="date";bd.value=prof.bday||"";
+  const nm=mk("Имя",prof.name,30),un=mk("Юзернейм (латиница, цифры, _)",prof.username,21),unh=h("div","unh"),bio=mk("О себе",prof.bio,150),bd=h("input","in");
+  un.autocapitalize="none";un.autocomplete="off";un.spellcheck=false;
+  const norm=()=>un.value.trim().replace(/^@/,"").toLowerCase(),RE=/^[a-z0-9_]{3,20}$/;let tmr;
+  un.oninput=()=>{clearTimeout(tmr);const v=norm();unh.className="unh";
+    if(v===prof.username){unh.textContent="Это твой текущий юзернейм";return}
+    if(!RE.test(v)){unh.textContent="3–20 символов: латиница, цифры и _";return}
+    unh.textContent="Проверяю…";
+    tmr=setTimeout(async()=>{try{const [a,c]=await Promise.all([getDoc(doc(db,"usernames",v)),getDoc(doc(db,"handles",v))]);if(norm()!==v)return;const free=!a.exists()&&!c.exists();unh.textContent="@"+v+(free?" свободен":" уже занят");unh.className="unh "+(free?"ok":"bad")}catch{unh.textContent=""}},450)};bd.type="date";bd.value=prof.bday||"";
   const ab=mkBT("btn g","camera","Сменить аватар");ab.onclick=()=>pickImg(f=>setImg("avatar",f,256,256));
   const bb=mkBT("btn g","image","Сменить баннер");bb.onclick=()=>pickImg(f=>setImg("banner",f,1000,640));
   const sv=h("button","btn","Сохранить");
-  sv.onclick=async()=>{const name=nm.value.trim()||prof.username,bi=bio.value.trim(),bday=bd.value;try{await updateDoc(doc(db,"users",uid),{name,bio:bi,bday});Object.assign(prof,{name,bio:bi,bday});renderProfile();buildSettings();closeOv();toast("Сохранено")}catch(e){toast("Ошибка: "+e.code)}};
-  b.append(nm,bio,h("div","sub","День рождения"),bd,ab,bb);
+  sv.onclick=async()=>{
+    const nu=norm();
+    if(nu!==prof.username){
+      if(!RE.test(nu)){toast("Юзернейм: 3–20 символов, латиница, цифры и _");return}
+      sv.disabled=true;
+      try{await changeUsername(nu)}catch(e){sv.disabled=false;toast(e&&e.message==="taken"?"Юзернейм @"+nu+" уже занят":e&&e.code==="permission-denied"?"Нет прав на смену юзернейма. Проверь правила Firestore":"Ошибка: "+((e&&e.code)||(e&&e.message)));return}
+      sv.disabled=false;
+    }
+    const name=nm.value.trim()||prof.username,bi=bio.value.trim(),bday=bd.value;try{await updateDoc(doc(db,"users",uid),{name,bio:bi,bday});Object.assign(prof,{name,bio:bi,bday});renderProfile();buildSettings();closeOv();toast("Сохранено")}catch(e){toast("Ошибка: "+e.code)}};
+  b.append(nm,un,unh,bio,h("div","sub","День рождения"),bd,ab,bb);
   if(prof.banner){const rb=h("button","btn g","Убрать баннер");rb.onclick=async()=>{try{await updateDoc(doc(db,"users",uid),{banner:""});prof.banner="";renderProfile();closeOv()}catch(e){toast("Ошибка: "+e.code)}};b.append(rb)}
   b.append(sv);ov(b);
 }
@@ -1070,7 +1163,13 @@ function pgData(){page("Данные и память",b=>{
 function pgAbout(){page("О MAQW",b=>{
   const c=h("div","sec glass col");c.style.cssText="padding:20px;text-align:center";
   const l=h("div","logo");l.style.margin="0 auto";l.className="logo img";l.style.width=l.style.height="76px";l.innerHTML='<img src="icons/icon-192.png" alt="">';
-  c.append(l,h("h3","","MAQW 2.1"),h("div","sub","Свой мессенджер: личные чаты, группы и каналы, фото, видео, музыка, файлы, голосовые. Бесплатно на Firebase и GitHub Pages. Файлы до 6 МБ хранятся прямо в базе."));b.append(c);
+  c.append(l,h("h3","","MAQW 2.2"),h("div","vtag","Что нового"));b.append(c);
+  const g=h("div","sgrp glass");
+  [["user","linear-gradient(135deg,#a78bfa,#7c3aed)","Смена юзернейма","Профиль → «Изменить». Пока вводишь, сразу видно, свободен ли ник."],
+   ["swap","linear-gradient(135deg,#60a5fa,#2563eb)","Несколько аккаунтов","До 3 аккаунтов. Нажми на карточку профиля вверху настроек, чтобы переключиться или добавить новый."],
+   ["check","linear-gradient(135deg,#4ade80,#16a34a)","Исправлено","Текст больше не выделяется при нажатии на кнопки."]
+  ].forEach(([ic,col,t,d])=>{const r=h("div","sr2 nc"),i=h("div","sic");i.innerHTML=SV(ic);i.style.background=col;const x=h("div","grow");x.append(h("b","",t),h("div","sub wrap",d));r.append(i,x);g.append(r)});
+  b.append(g);
 })}
 function pgAcc(){page("Аккаунт и безопасность",b=>{
   const cu=auth.currentUser||{},s=secBox(b),m=h("div","srow col2");m.append(h("div","sub","Почта"),h("b","",(cu.email||"")+(cu.emailVerified?" · подтверждена":" · не подтверждена")));s.append(m);
@@ -1079,10 +1178,10 @@ function pgAcc(){page("Аккаунт и безопасность",b=>{
   actRow(s,"trash|Удалить аккаунт",delAccount,true);
 })}
 function buildSettings(){
-  const box=E("sbox");box.replaceChildren();
+  const box=E("sbox");box.replaceChildren();saveAcc();
   const me=h("div","shead glass");me.append(av(prof,64));
   const t=h("div","grow");t.append(h("b","",prof.name),h("div","sub","@"+prof.username),h("div","sub",(auth.currentUser||{}).email||""));
-  me.append(t,mkI("chev","chev"));me.onclick=()=>tab("profile");box.append(me);
+  const swb=h("div","swb");swb.append(mkI("swap"),h("span","","Сменить"));me.append(t,swb);me.onclick=accSheet;box.append(me);
   const list=items=>{const g=h("div","sgrp glass");items.forEach(([ic,col,t,f,d,sub])=>{const r=h("div","sr2"+(d?" dng":"")),i=h("div","sic");i.innerHTML=SV(ic);i.style.background=col;const x=h("div","grow");x.append(h("b","",t));if(sub)x.append(h("div","sub",sub));r.append(i,x);if(!d)r.append(mkI("chev","chev"));r.onclick=f;g.append(r)});box.append(g)};
   list([["palette","linear-gradient(135deg,#a78bfa,#7c3aed)","Оформление",pgLook,0,"Тема, стекло, анимации"],
         ["chat","linear-gradient(135deg,#60a5fa,#2563eb)","Настройки чатов",pgChats,0,"Текст, фон, отправка"],
@@ -1092,14 +1191,14 @@ function buildSettings(){
         ["link","linear-gradient(135deg,#67e8f9,#0891b2)","Пригласить друзей",shareApp],
         ["info","linear-gradient(135deg,#94a3b8,#475569)","О MAQW",pgAbout]]);
   list([["key","linear-gradient(135deg,#fcd34d,#d97706)","Аккаунт и безопасность",pgAcc],
-        ["logout","linear-gradient(135deg,#f87171,#b91c1c)","Выйти из аккаунта",()=>signOut(auth),1]]);
+        ["logout","linear-gradient(135deg,#f87171,#b91c1c)","Выйти из аккаунта",doLogout,1]]);
 }
 async function delAccount(){
   if(!confirm("Удалить аккаунт навсегда? Это нельзя отменить."))return;
   const pw=prompt("Введи пароль для подтверждения");if(!pw)return;
   try{
     const u=auth.currentUser;await reauthenticateWithCredential(u,EmailAuthProvider.credential(u.email,pw));
-    await deleteDoc(doc(db,"usernames",prof.username)).catch(()=>{});await deleteDoc(doc(db,"users",uid));await deleteUser(u);
+    await deleteDoc(doc(db,"usernames",prof.username)).catch(()=>{});await deleteDoc(doc(db,"users",uid));await deleteUser(u);setAccs(accs().filter(a=>a.slot!==SLOT));{const o=accs()[0];if(o){rawSet("maqw_slot",String(o.slot));location.reload()}}
   }catch(e){toast(AE[e.code]||"Ошибка: "+(e.code||e.message),4000)}
 }
 
