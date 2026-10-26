@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "MAQW",
+  "short_name": "MAQW",
+  "description": "MAQW — мессенджер: личные чаты, группы, каналы, фото, голосовые и файлы.",
+  "lang": "ru",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08050e",
+  "theme_color": "#08050e",
+  "categories": ["social", "communication"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
