@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#140826"><title>Мессенджер</title>
+<style>
+:root{--p1:#7c3aed;--p2:#c026d3;--tx:#f5eeff;--mu:#b8a6d9;--bg:radial-gradient(circle at 15% 8%,#7c3aed 0,transparent 45%),radial-gradient(circle at 92% 38%,#c026d3 0,transparent 38%),radial-gradient(circle at 25% 98%,#4c1d95 0,transparent 50%),#140826}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden}
+body{color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#140826}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--bg)}
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.06));backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.08),0 8px 30px rgba(20,0,50,.4)}
+.in{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:var(--tx);border-radius:16px;padding:13px 15px;font:inherit;width:100%}
+.in::placeholder{color:var(--mu)}
+.btn{background:linear-gradient(135deg,var(--p1),var(--p2));border:0;color:#fff;border-radius:16px;padding:13px 18px;font:inherit;font-weight:600;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.btn.g{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+.btn:disabled{opacity:.5}
+:focus-visible{outline:2px solid #e9d5ff;outline-offset:2px}
+.sub{color:var(--mu);font-size:14px}.grow{flex:1;min-width:0}.grow>*{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.col{display:flex;flex-direction:column;gap:12px}
+#auth{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
+#auth .card{width:100%;max-width:380px;padding:24px;border-radius:28px}
+#auth h1{margin:0 0 4px;font-size:28px}
+#err{color:#fda4af;font-size:14px;min-height:20px}
+#sw{background:none;border:0;color:var(--mu);font:inherit;padding:6px}
+#app{position:absolute;inset:0;display:none}
+.view{position:absolute;inset:0;overflow-y:auto;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 120px;display:none}
+.view.on{display:block}
+h2{margin:0 0 14px;font-size:26px}
+.row{display:flex;gap:12px;align-items:center;padding:12px;border-radius:22px;margin-bottom:10px;cursor:pointer}
+.empty{color:var(--mu);text-align:center;margin-top:40px}
+.av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--p2)) center/cover;display:grid;place-items:center;font-weight:700;flex:none;border:2px solid rgba(255,255,255,.35)}
+.pc{border-radius:28px;overflow:hidden;padding-bottom:18px;text-align:center;margin-bottom:14px}
+.banner{height:130px;background:linear-gradient(135deg,#a78bfa,#c026d3) center/cover}
+.pc .av{margin:-42px auto 8px}
+.pc h3{margin:0}.pc p{margin:8px 18px 0}
+nav{position:fixed;left:16px;right:16px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;padding:6px;border-radius:32px;z-index:5}
+nav button{flex:1;background:none;border:0;color:var(--mu);font:inherit;font-size:12px;padding:8px 0;border-radius:26px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button.on{color:#fff;background:rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#chatv{position:fixed;inset:0;display:none;flex-direction:column;background:var(--bg);z-index:10}
+#chead{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;border-radius:0 0 24px 24px}
+.back{background:none;border:0;color:#fff;font-size:34px;line-height:1;padding:0 6px}
+#msgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:6px}
+.msg{max-width:80%;padding:9px 13px;border-radius:20px;align-self:flex-start;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,rgba(124,58,237,.95),rgba(192,38,211,.9))}
+.msg small{display:block;text-align:right;opacity:.6;font-size:11px}
+#mf{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0}
+#sheet{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(10,0,25,.55);z-index:20}
+#sheet>div{width:100%;max-width:380px}
+</style></head><body>
+
+<div id="auth"><div class="card glass col">
+  <h1>Мессенджер</h1><div class="sub">Войди или создай аккаунт</div>
+  <div id="regf" class="col" style="display:none">
+    <input id="nm" class="in" placeholder="Имя" maxlength="30" autocomplete="off">
+    <input id="un" class="in" placeholder="@юзернейм (латиница, цифры, _)" maxlength="21" autocapitalize="none" autocomplete="off">
+  </div>
+  <input id="em" class="in" type="email" placeholder="Почта" autocomplete="email">
+  <input id="pw" class="in" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
+  <div id="err"></div>
+  <button id="go" class="btn">Войти</button>
+  <button id="sw"></button>
+</div></div>
+
+<div id="app">
+  <div id="v-chats" class="view"><h2>Чаты</h2><div id="chatlist"></div></div>
+  <div id="v-contacts" class="view"><h2>Контакты</h2>
+    <input id="q" class="in" placeholder="Найти по @юзернейму" autocapitalize="none" autocomplete="off" style="margin-bottom:12px">
+    <div id="found"></div><div id="clist"></div></div>
+  <div id="v-settings" class="view"><h2>Настройки</h2>
+    <div class="glass row" style="cursor:default"><div class="grow"><div class="sub">Почта</div><b id="semail"></b></div></div>
+    <div class="col"><button id="reset" class="btn g">Сменить пароль по почте</button><button id="out" class="btn">Выйти из аккаунта</button></div>
+    <p id="smsg" class="sub"></p></div>
+  <div id="v-profile" class="view"><h2>Профиль</h2><div id="pbox"></div>
+    <div class="col glass" style="padding:16px;border-radius:24px">
+      <input id="en" class="in" placeholder="Имя" maxlength="30">
+      <input id="eb" class="in" placeholder="О себе" maxlength="150">
+      <button id="save" class="btn">Сохранить</button>
+      <button id="pa" class="btn g">Сменить аватар</button>
+      <button id="pb" class="btn g">Сменить баннер</button>
+      <input id="fa" type="file" accept="image/*" hidden><input id="fb" type="file" accept="image/*" hidden>
+    </div></div>
+  <nav class="glass" id="nav">
+    <button data-t="chats"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Чаты</button>
+    <button data-t="contacts"><svg viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 8h6M9 12h6"/></svg>Контакты</button>
+    <button data-t="settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Настройки</button>
+    <button data-t="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5a6 6 0 0111 0"/></svg>Профиль</button>
+  </nav>
+</div>
+
+<div id="chatv"><div id="chead" class="glass"></div><div id="msgs"></div>
+  <form id="mf" class="glass"><input id="mt" class="in" placeholder="Сообщение" maxlength="1000" autocomplete="off"><button class="btn">➤</button></form></div>
+<div id="sheet"><div></div></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,sendPasswordResetEmail,deleteUser} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,getDocs,setDoc,updateDoc,collection,addDoc,query,where,orderBy,limit,onSnapshot,serverTimestamp,runTransaction,arrayUnion} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp({
+  apiKey:"AIzaSyDv4xZrK2vNGjad9bjnDqoL_H4ewDzpEKc",
+  authDomain:"messenger-42828.firebaseapp.com",
+  projectId:"messenger-42828",
+  storageBucket:"messenger-42828.firebasestorage.app",
+  messagingSenderId:"856285064750",
+  appId:"1:856285064750:web:2e2ee80e87200ba41b39bf",
+  measurementId:"G-3M9LBX585W"});
+const auth=getAuth(app),db=getFirestore(app);
+const E=id=>document.getElementById(id);
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const tm=ts=>ts.toDate().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+const AE={"auth/email-already-in-use":"Эта почта уже зарегистрирована","auth/weak-password":"Пароль слишком короткий (минимум 6 символов)","auth/invalid-email":"Некорректная почта","auth/invalid-credential":"Неверная почта или пароль","auth/network-request-failed":"Нет связи с интернетом","auth/operation-not-allowed":"Вход по почте не включён в Firebase (Authentication)"};
+let uid="",prof=null,cur=null,mode="login",registering=false,unChats,unMsg;const cache={};
+
+/* ---------- helpers ---------- */
+async function getUser(id){
+  if(cache[id])return cache[id];
+  const s=await getDoc(doc(db,"users",id));
+  return cache[id]=s.exists()?{id,...s.data()}:{id,name:"Удалённый",username:"deleted"};
+}
+function av(u,s=48){const e=h("div","av",u.avatar?"":(u.name||"?")[0].toUpperCase());e.style.width=e.style.height=s+"px";if(u.avatar)e.style.backgroundImage="url("+u.avatar+")";return e}
+function row(u,sub,ts){const r=h("div","row glass");r.append(av(u));const m=h("div","grow");m.append(h("b","",u.name),h("div","sub",sub));r.append(m);if(ts&&ts.toDate)r.append(h("small","sub",tm(ts)));r.onclick=()=>openChat(u.id);return r}
+function pcard(u){const c=h("div","pc glass"),b=h("div","banner");if(u.banner)b.style.backgroundImage="url("+u.banner+")";c.append(b,av(u,84),h("h3","",u.name),h("div","sub","@"+u.username));if(u.bio)c.append(h("p","",u.bio));return c}
+function sheet(u){const s=E("sheet");s.firstChild.textContent="";s.firstChild.append(pcard(u));s.style.display="flex";s.onclick=()=>s.style.display="none"}
+function pic(file,w,hh){return new Promise(r=>{const i=new Image();i.onload=()=>{const c=document.createElement("canvas");c.width=w;c.height=hh;const x=c.getContext("2d"),k=Math.max(w/i.width,hh/i.height),dw=i.width*k,dh=i.height*k;x.drawImage(i,(w-dw)/2,(hh-dh)/2,dw,dh);r(c.toDataURL("image/jpeg",.8))};i.src=URL.createObjectURL(file)})}
+
+/* ---------- auth ---------- */
+const aerr=t=>E("err").textContent=t||"";
+function setMode(m){mode=m;E("regf").style.display=m==="reg"?"flex":"none";E("go").textContent=m==="reg"?"Создать аккаунт":"Войти";E("sw").textContent=m==="reg"?"Уже есть аккаунт? Войти":"Нет аккаунта? Регистрация";aerr("")}
+setMode("login");
+E("sw").onclick=()=>setMode(mode==="reg"?"login":"reg");
+
+async function reg(em,pw){
+  const un=E("un").value.trim().replace(/^@/,"").toLowerCase(),nm=E("nm").value.trim();
+  if(!/^[a-z0-9_]{3,20}$/.test(un))throw"Юзернейм: 3–20 символов, латиница, цифры и _";
+  if((await getDoc(doc(db,"usernames",un))).exists())throw"Юзернейм @"+un+" уже занят";
+  registering=true;let c;
+  try{c=await createUserWithEmailAndPassword(auth,em,pw)}catch(e){registering=false;throw e}
+  try{
+    await runTransaction(db,async t=>{
+      const r=doc(db,"usernames",un);
+      if((await t.get(r)).exists())throw new Error("taken");
+      t.set(r,{uid:c.user.uid});
+      t.set(doc(db,"users",c.user.uid),{username:un,name:nm||un,bio:"",avatar:"",banner:"",contacts:[],createdAt:serverTimestamp()});
+    });
+  }catch(e){await deleteUser(c.user);registering=false;throw e.message==="taken"?"Юзернейм @"+un+" уже занят":e}
+  registering=false;await boot(c.user);
+}
+E("go").onclick=async()=>{
+  const em=E("em").value.trim(),pw=E("pw").value;
+  if(!em||!pw)return aerr("Введи почту и пароль");
+  E("go").disabled=true;aerr("");
+  try{mode==="reg"?await reg(em,pw):await signInWithEmailAndPassword(auth,em,pw)}
+  catch(e){aerr(typeof e==="string"?e:AE[e.code]||e.code||e.message)}
+  E("go").disabled=false;
+};
+
+onAuthStateChanged(auth,u=>{
+  if(registering)return;
+  if(u)boot(u);
+  else{unChats&&unChats();unMsg&&unMsg();cache&&Object.keys(cache).forEach(k=>delete cache[k]);E("app").style.display="none";E("chatv").style.display="none";E("auth").style.display="flex"}
+});
+
+async function boot(u){
+  uid=u.uid;
+  const s=await getDoc(doc(db,"users",uid));
+  if(!s.exists()){await signOut(auth);return}
+  prof=cache[uid]={id:uid,...s.data()};
+  E("auth").style.display="none";E("app").style.display="block";
+  E("semail").textContent=u.email;
+  renderProfile();renderContacts();listenChats();tab("chats");
+}
+
+/* ---------- tabs ---------- */
+function tab(t){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+t));
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+}
+E("nav").onclick=e=>{const b=e.target.closest("button");if(b)tab(b.dataset.t)};
+
+/* ---------- chats ---------- */
+function listenChats(){
+  unChats&&unChats();
+  unChats=onSnapshot(query(collection(db,"chats"),where("members","array-contains",uid)),async s=>{
+    const cs=s.docs.map(d=>d.data()).sort((a,b)=>((b.lastAt&&b.lastAt.seconds)||9e9)-((a.lastAt&&a.lastAt.seconds)||9e9));
+    const us=await Promise.all(cs.map(c=>getUser(c.members.find(x=>x!==uid))));
+    const box=E("chatlist");box.textContent="";
+    if(!cs.length)box.append(h("p","empty","Чатов пока нет. Найди человека во вкладке «Контакты»."));
+    cs.forEach((c,i)=>box.append(row(us[i],c.last||"",c.lastAt)));
+  },e=>E("chatlist").textContent="Ошибка: "+e.code);
+}
+async function openChat(ou){
+  const o=await getUser(ou),cid=[uid,ou].sort().join("_");
+  cur={cid,ou};
+  const hd=E("chead");hd.textContent="";
+  const b=h("button","back","‹");b.onclick=()=>{unMsg&&unMsg();E("chatv").style.display="none"};
+  const t=h("div","grow");t.append(h("b","",o.name),h("div","sub","@"+o.username));
+  t.onclick=()=>sheet(o);hd.append(b,av(o,40),t);
+  E("msgs").textContent="";E("chatv").style.display="flex";
+  unMsg&&unMsg();let first=true;
+  unMsg=onSnapshot(query(collection(db,"chats",cid,"messages"),orderBy("createdAt"),limit(300)),s=>{
+    const l=E("msgs"),bot=first||l.scrollHeight-l.scrollTop-l.clientHeight<90;first=false;l.textContent="";
+    s.forEach(d=>{const m=d.data(),x=h("div","msg"+(m.from===uid?" me":""));x.append(h("span","",m.text),h("small","",m.createdAt?tm(m.createdAt):""));l.append(x)});
+    if(bot)l.scrollTop=l.scrollHeight;
+  });
+}
+E("mf").onsubmit=async e=>{
+  e.preventDefault();const t=E("mt").value.trim();if(!t||!cur)return;E("mt").value="";
+  const {cid,ou}=cur;
+  try{
+    await setDoc(doc(db,"chats",cid),{members:[uid,ou],last:t.slice(0,80),lastAt:serverTimestamp()},{merge:true});
+    await addDoc(collection(db,"chats",cid,"messages"),{from:uid,text:t,createdAt:serverTimestamp()});
+  }catch(err){alert("Не отправилось: "+err.code)}
+};
+
+/* ---------- contacts ---------- */
+async function renderContacts(){
+  const box=E("clist");box.textContent="";
+  const ids=prof.contacts||[];
+  if(!ids.length)return;
+  const us=await Promise.all(ids.map(getUser));
+  box.append(h("div","sub","Мои контакты"));
+  us.forEach(u=>box.append(row(u,"@"+u.username)));
+}
+E("q").oninput=async()=>{
+  const q=E("q").value.trim().replace(/^@/,"").toLowerCase(),box=E("found");box.textContent="";
+  if(q.length<2)return;
+  const s=await getDocs(query(collection(db,"users"),where("username",">=",q),where("username","<=",q+"\uf8ff"),limit(10)));
+  s.forEach(d=>{
+    if(d.id===uid)return;
+    const u=cache[d.id]={id:d.id,...d.data()},r=row(u,"@"+u.username);
+    r.onclick=async()=>{
+      await updateDoc(doc(db,"users",uid),{contacts:arrayUnion(u.id)});
+      prof.contacts=[...new Set([...(prof.contacts||[]),u.id])];renderContacts();openChat(u.id);
+    };
+    box.append(r);
+  });
+  if(!box.childNodes.length)box.append(h("p","empty","Никого не найдено"));
+};
+
+/* ---------- profile & settings ---------- */
+function renderProfile(){
+  const b=E("pbox");b.textContent="";b.append(pcard(prof));
+  E("en").value=prof.name||"";E("eb").value=prof.bio||"";
+}
+async function setImg(field,file,w,hh){
+  if(!file)return;
+  const data=await pic(file,w,hh);
+  await updateDoc(doc(db,"users",uid),{[field]:data});
+  prof[field]=data;renderProfile();
+}
+E("pa").onclick=()=>E("fa").click();E("pb").onclick=()=>E("fb").click();
+E("fa").onchange=e=>setImg("avatar",e.target.files[0],256,256);
+E("fb").onchange=e=>setImg("banner",e.target.files[0],900,360);
+E("save").onclick=async()=>{
+  const name=E("en").value.trim()||prof.username,bio=E("eb").value.trim();
+  await updateDoc(doc(db,"users",uid),{name,bio});
+  prof.name=name;prof.bio=bio;renderProfile();
+};
+E("out").onclick=()=>signOut(auth);
+E("reset").onclick=async()=>{
+  try{await sendPasswordResetEmail(auth,auth.currentUser.email);E("smsg").textContent="Письмо для смены пароля отправлено на почту."}
+  catch(e){E("smsg").textContent="Ошибка: "+e.code}
+};
+</script></body></html>
