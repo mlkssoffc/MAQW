@@ -4,14 +4,14 @@
 <meta name="theme-color" content="#08050e"><title>MAQW</title>
 <meta name="description" content="MAQW — мессенджер: личные чаты, группы, каналы, фото, голосовые и файлы">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=4">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png?v=4">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=4">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="MAQW">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preload" as="image" href="icons/icon-512.png">
+<link rel="preload" as="image" href="icons/icon-512.png?v=4">
 <style>
 :root{
 --a1:#a78bfa;--a2:#7c3aed;--a3:#c026d3;--bg0:#08050e;--g1:rgba(139,92,246,.5);--g2:rgba(217,70,239,.24);--g3:rgba(91,33,182,.45);
@@ -340,13 +340,54 @@ html[data-theme=light] .tword,html.light .tword{background-image:linear-gradient
 .ai>span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;position:relative}
 .ai .pl{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.28);color:#fff}.ai .pl .i{width:24px;height:24px;stroke:#fff}
 .ai .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);border:0;display:grid;place-items:center;padding:0;color:#fff;z-index:2}.ai .rm .i{width:12px;height:12px;stroke-width:2.8}
+
+/* ===== v7: реакции как в Telegram, друзья ===== */
+#cx{position:fixed;inset:0;z-index:35;background:rgba(6,3,14,.5);-webkit-backdrop-filter:blur(12px) saturate(1.15);backdrop-filter:blur(12px) saturate(1.15);animation:cxIn .22s ease both}
+html.noblur #cx{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(6,3,14,.82)}
+@keyframes cxIn{from{opacity:0}to{opacity:1}}
+#cx .cx-b{position:absolute;pointer-events:none;margin:0!important;max-width:none!important;box-shadow:0 14px 44px rgba(0,0,0,.45);transition:top .28s cubic-bezier(.2,.9,.3,1)}
+#cx .cx-p,#cx .cx-m{position:absolute;transition:top .28s cubic-bezier(.2,.9,.3,1)}
+#cx.sheet{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:10px;padding:14px calc(14px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px))}
+#cx.sheet .cx-p,#cx.sheet .cx-m{position:static}
+#cx .menu{margin:0;width:min(290px,calc(100vw - 24px))}
+.rxp{display:flex;align-items:center;gap:0;padding:5px 6px;border-radius:32px;transform-origin:bottom left;animation:rxpIn .34s cubic-bezier(.2,1.4,.4,1) both;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.rxp.r{transform-origin:bottom right}
+@keyframes rxpIn{from{opacity:0;transform:scale(.55) translateY(16px)}to{opacity:1;transform:none}}
+.rxe{width:40px;height:40px;border:0;background:none;border-radius:50%;font-size:25px;line-height:1;display:grid;place-items:center;padding:0;animation:rxeIn .46s cubic-bezier(.2,1.8,.4,1) both;animation-delay:calc(var(--i)*34ms + 90ms);transition:transform .12s}
+@keyframes rxeIn{from{opacity:0;transform:scale(0) translateY(12px)}to{opacity:1;transform:none}}
+.rxe:active{transform:scale(1.35)}
+.rxe.on{background:rgba(255,255,255,.22)}
+.rxm{width:32px;height:32px;margin:0 2px 0 4px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:var(--tx);display:grid;place-items:center;padding:0;flex:none}
+.rxm .i{width:18px;height:18px;stroke-width:2.6}
+.rxg{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;padding:8px;border-radius:26px;max-height:250px;overflow-y:auto;width:min(312px,calc(100vw - 24px));animation:rxpIn .3s cubic-bezier(.2,1.2,.4,1) both;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.rxg .rxe{width:100%;height:46px;font-size:27px;animation-delay:calc(var(--i)*9ms)}
+.rcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.rc{display:inline-flex;align-items:center;gap:5px;padding:3px 11px 3px 8px;border-radius:17px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.1);color:inherit;font-size:.95em;line-height:1.2}
+.rc .e{font-size:1.25em;line-height:1}.rc .n{font-weight:700;font-size:.9em}
+.msg.me .rc{background:rgba(255,255,255,.22)}
+.rc.mine{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent;color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.4)}
+.msg.me .rc.mine{background:#fff;color:#3b1d8a;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.rc.pop{animation:rcPop .42s cubic-bezier(.2,1.8,.4,1)}
+@keyframes rcPop{from{transform:scale(.4)}to{transform:scale(1)}}
+/* друзья */
+.frb{width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;padding:0;flex:none;color:#fff}
+.frb.ok{background:linear-gradient(135deg,#4ade80,#16a34a)}.frb.no{background:var(--inp);color:var(--mu);border:1px solid var(--bd)}
+.frb .i{width:22px;height:22px;stroke-width:2.4}
+#nd{display:none;flex-direction:column;align-items:center;gap:10px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));border-radius:26px 26px 0 0;text-align:center;flex:none}
+#nd .btn{width:100%}
+.seg{display:flex;gap:4px;padding:4px;background:var(--inp);border:1px solid var(--bd);border-radius:16px}
+.seg button{flex:1;padding:9px 4px;border:0;background:none;border-radius:12px;color:var(--mu);font-weight:600}
+.seg button.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff}
+.urq{cursor:pointer}
+.sp-orb img{background:#fff;padding:13px;box-sizing:border-box}
+.tlogo img{background:#fff;padding:4px;box-sizing:border-box}
 </style></head><body>
 
-<div id="splash"><div class="sp-parts"><i style="--x:8%;--d:0.0s;--s:3px;--t:6.5s"></i><i style="--x:17%;--d:1.8s;--s:2px;--t:5.4s"></i><i style="--x:26%;--d:3.2s;--s:4px;--t:7.2s"></i><i style="--x:35%;--d:0.7s;--s:2px;--t:5.9s"></i><i style="--x:44%;--d:2.6s;--s:3px;--t:6.8s"></i><i style="--x:53%;--d:4.1s;--s:2px;--t:5.2s"></i><i style="--x:62%;--d:1.2s;--s:4px;--t:7.5s"></i><i style="--x:71%;--d:3.6s;--s:3px;--t:6.1s"></i><i style="--x:80%;--d:0.4s;--s:2px;--t:5.7s"></i><i style="--x:88%;--d:2.2s;--s:3px;--t:6.6s"></i><i style="--x:94%;--d:4.6s;--s:2px;--t:5.5s"></i><i style="--x:13%;--d:5.0s;--s:3px;--t:7.0s"></i></div><div class="sp-orb"><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-spin"></span><img src="icons/icon-512.png" alt=""></div><div class="sp-word"><span>M</span><span>A</span><span>Q</span><span>W</span></div><div class="sp-bar"><i></i></div><div id="spmsg"></div></div>
+<div id="splash"><div class="sp-parts"><i style="--x:8%;--d:0.0s;--s:3px;--t:6.5s"></i><i style="--x:17%;--d:1.8s;--s:2px;--t:5.4s"></i><i style="--x:26%;--d:3.2s;--s:4px;--t:7.2s"></i><i style="--x:35%;--d:0.7s;--s:2px;--t:5.9s"></i><i style="--x:44%;--d:2.6s;--s:3px;--t:6.8s"></i><i style="--x:53%;--d:4.1s;--s:2px;--t:5.2s"></i><i style="--x:62%;--d:1.2s;--s:4px;--t:7.5s"></i><i style="--x:71%;--d:3.6s;--s:3px;--t:6.1s"></i><i style="--x:80%;--d:0.4s;--s:2px;--t:5.7s"></i><i style="--x:88%;--d:2.2s;--s:3px;--t:6.6s"></i><i style="--x:94%;--d:4.6s;--s:2px;--t:5.5s"></i><i style="--x:13%;--d:5.0s;--s:3px;--t:7.0s"></i></div><div class="sp-orb"><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-ring"></span><span class="sp-spin"></span><img src="icons/icon-512.png?v=4" alt=""></div><div class="sp-word"><span>M</span><span>A</span><span>Q</span><span>W</span></div><div class="sp-bar"><i></i></div><div id="spmsg"></div></div>
 <script>setTimeout(function(){if(!window.__mq){var m=document.getElementById("spmsg");if(m)m.innerHTML="Не удаётся загрузиться.<br>Проверь интернет и попробуй ещё раз.<br><button onclick=\"location.reload()\">Обновить</button>"}},14000)</script>
 
 <div id="auth" style="display:none"><form id="authf" class="card lq col" autocomplete="on">
-  <div class="logo img"><img src="icons/icon-192.png" alt="MAQW"></div>
+  <div class="logo img"><img src="icons/icon-192.png?v=4" alt="MAQW"></div>
   <h1>MAQW</h1><div class="sub">Войди или создай аккаунт</div>
   <div id="regf" class="col" style="display:none">
     <input id="nm" class="in" placeholder="Имя" maxlength="30" autocomplete="off">
@@ -371,7 +412,7 @@ html[data-theme=light] .tword,html.light .tword{background-image:linear-gradient
 </div></div>
 
 <div id="app">
-  <div id="top"><div class="tpill lq"><div class="tlogo"><span class="tring"></span><img src="icons/icon-192.png" alt=""></div><b class="tword">MAQW</b></div></div>
+  <div id="top"><div class="tpill lq"><div class="tlogo"><span class="tring"></span><img src="icons/icon-192.png?v=4" alt=""></div><b class="tword">MAQW</b></div></div>
   <div id="v-chats" class="view">
     <input id="cs" class="in" placeholder="Поиск по чатам" autocomplete="off">
     <div id="chips"><button data-f="all" class="on">Все</button><button data-f="dm">Личные</button><button data-f="group">Группы</button><button data-f="channel">Каналы</button></div>
@@ -379,6 +420,7 @@ html[data-theme=light] .tword,html.light .tword{background-image:linear-gradient
   <div id="v-contacts" class="view"><h2>Контакты</h2>
     <input id="q" class="in" placeholder="Найти @юзернейм, группу или канал" autocapitalize="none" autocomplete="off" style="margin-bottom:12px">
     <div id="found"></div>
+    <div id="creq"></div>
     <div class="col" id="cact" style="margin:6px 0 4px"></div>
     <div id="clist"></div></div>
   <div id="v-settings" class="view"><div id="sbox"></div></div>
@@ -386,7 +428,7 @@ html[data-theme=light] .tword,html.light .tword{background-image:linear-gradient
   <button id="fab" class="btn fab" aria-label="Новый чат"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
   <nav class="lq" id="nav">
     <button data-t="chats"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Чаты<span class="nb" id="nbc"></span></button>
-    <button data-t="contacts"><svg viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 8h6M9 12h6"/></svg>Контакты</button>
+    <button data-t="contacts"><svg viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 8h6M9 12h6"/></svg>Контакты<span class="nb" id="cbc"></span></button>
     <button data-t="settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Настройки</button>
     <button data-t="profile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5a6 6 0 0111 0"/></svg>Профиль</button>
   </nav>
@@ -409,6 +451,7 @@ html[data-theme=light] .tword,html.light .tword{background-image:linear-gradient
   </div>
   <div id="recbar" class="lq"><i></i><b id="rect">0:00</b><span class="sub grow">Идёт запись…</span><button class="btn g" id="recx" type="button">Отмена</button><button class="btn" id="recs" type="button">Отправить</button></div>
   <div id="ro" class="lq"><button class="btn g" id="rom" type="button"></button></div>
+  <div id="nd" class="lq"></div>
 </div>
 
 <div id="sp"><div id="sph" class="lq"></div><div id="spb"></div></div>
@@ -444,7 +487,7 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
 const E=id=>document.getElementById(id);
 const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 /* ===== иконки ===== */
-const ICONS={"check":'<path d="M5 12.5l4.5 4.5L19 7.5"/>',"swap":'<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',"chat": "<path d=\"M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\"/><circle cx=\"17\" cy=\"9\" r=\"2.4\"/><path d=\"M17 14c2.6 0 4.5 2 4.5 4.8\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8\"/>", "megaphone": "<path d=\"M3 10v4a1 1 0 001 1h2l5 4V5L6 9H4a1 1 0 00-1 1z\"/><path d=\"M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11\"/>", "bookmark": "<path d=\"M6 3h12v18l-6-4.5L6 21z\"/>", "pin": "<path d=\"M9 3h6l-1 6 3 3v2H7v-2l3-3z\"/><path d=\"M12 14v7\"/>", "bell": "<path d=\"M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z\"/><path d=\"M10 20a2 2 0 004 0\"/>", "bellx": "<path d=\"M8.7 3.7A6 6 0 0118 9c0 2.4.5 4 1.1 5M6.3 6.3C6.1 7.1 6 8 6 9c0 6-2.5 7.5-2.5 7.5H15\"/><path d=\"M10 20a2 2 0 004 0M3 3l18 18\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-4-4\"/>", "more": "<circle cx=\"12\" cy=\"5\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"19\" r=\"1.4\" fill=\"currentColor\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "chev": "<path d=\"M9 5l7 7-7 7\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "trash": "<path d=\"M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6\"/>", "eraser": "<path d=\"M8 20h12M5.5 14.5l8-8a2.1 2.1 0 013 0l2 2a2.1 2.1 0 010 3L11 19H8l-2.5-2.5a1.4 1.4 0 010-2z\"/>", "logout": "<path d=\"M10 4H5v16h5M15 8l4 4-4 4M19 12H9\"/>", "reply": "<path d=\"M9 7L4 12l5 5\"/><path d=\"M4 12h10a6 6 0 016 6v1\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "edit": "<path d=\"M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z\"/><path d=\"M13.5 6.5l4 4\"/>", "forward": "<path d=\"M15 7l5 5-5 5\"/><path d=\"M20 12H10a6 6 0 00-6 6v1\"/>", "eyeoff": "<path d=\"M3 3l18 18M10.6 6.2A9.8 9.8 0 0112 6c5 0 8.5 4.5 9.5 6a15 15 0 01-3.2 3.6M6.5 7.6C4.4 9 3 11 2.5 12c1 1.6 4.5 6 9.5 6 1.5 0 2.8-.4 4-1\"/><path d=\"M9.9 9.9a3 3 0 004.2 4.2\"/>", "image": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.8\"/><path d=\"M21 16l-5-5-9 9\"/>", "camera": "<path d=\"M4 8h3l2-3h6l2 3h3v11H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.6\"/>", "music": "<path d=\"M9 18V6l11-2v12\"/><circle cx=\"6.5\" cy=\"18\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"16\" r=\"2.5\"/>", "file": "<path d=\"M6 3h8l5 5v13H6z\"/><path d=\"M14 3v5h5M9 13h6M9 17h6\"/>", "play": "<path d=\"M7 4.5v15l13-7.5z\" fill=\"currentColor\"/>", "alert": "<path d=\"M12 3l10 18H2z\"/><path d=\"M12 10v5M12 18.2v.1\"/>", "clip": "<path d=\"M20 11.5l-8.2 8.2a5 5 0 01-7-7L13.5 4a3.3 3.3 0 014.7 4.7l-8.6 8.6a1.7 1.7 0 01-2.4-2.4L15 7\"/>", "smile": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 14a4.5 4.5 0 008 0\"/><path d=\"M9 9.5v.1M15 9.5v.1\" stroke-width=\"2.6\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "settings": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z\"/>", "link": "<path d=\"M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1 1\"/><path d=\"M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1-1\"/>", "palette": "<path d=\"M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.7 0-1 .8-1.8 1.9-1.8H17a4 4 0 004-4c0-4.4-4-7.7-9-7.7z\"/><circle cx=\"7.5\" cy=\"11\" r=\"1.1\"/><circle cx=\"10.5\" cy=\"7\" r=\"1.1\"/><circle cx=\"15.5\" cy=\"7.5\" r=\"1.1\"/>", "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"3\"/><path d=\"M8 11V8a4 4 0 018 0v3\"/>", "db": "<ellipse cx=\"12\" cy=\"6\" rx=\"7.5\" ry=\"3\"/><path d=\"M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v6M12 7.5v.1\"/>", "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M11 12l9-9M16 7l3 3M14 9l2 2\"/>", "mail": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3\"/><path d=\"M4 7l8 6 8-6\"/>", "cake": "<path d=\"M4 20h16v-6a2 2 0 00-2-2H6a2 2 0 00-2 2zM4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0\"/><path d=\"M12 12V8M12 5.6c-.9-1-.9-1.5 0-2.6.9 1.1.9 1.6 0 2.6z\"/>", "download": "<path d=\"M12 4v11M7 11l5 5 5-5M5 20h14\"/>", "refresh": "<path d=\"M20 11a8 8 0 00-14-4.5L4 9M4 4v5h5M4 13a8 8 0 0014 4.5L20 15M20 20v-5h-5\"/>", "ban": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M5.6 5.6l12.8 12.8\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>", "down": "<path d=\"M12 5v14M6 13l6 6 6-6\"/>"};
+const ICONS={"chevd":'<path d="M6 9l6 6 6-6"/>',"userplus":'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5M18 8v6M15 11h6"/>',"userx":'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5M16 9l5 5M21 9l-5 5"/>',"check":'<path d="M5 12.5l4.5 4.5L19 7.5"/>',"swap":'<path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>',"chat": "<path d=\"M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\"/><circle cx=\"17\" cy=\"9\" r=\"2.4\"/><path d=\"M17 14c2.6 0 4.5 2 4.5 4.8\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8\"/>", "megaphone": "<path d=\"M3 10v4a1 1 0 001 1h2l5 4V5L6 9H4a1 1 0 00-1 1z\"/><path d=\"M15 9a4 4 0 010 6M18 6.5a8 8 0 010 11\"/>", "bookmark": "<path d=\"M6 3h12v18l-6-4.5L6 21z\"/>", "pin": "<path d=\"M9 3h6l-1 6 3 3v2H7v-2l3-3z\"/><path d=\"M12 14v7\"/>", "bell": "<path d=\"M6 9a6 6 0 0112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z\"/><path d=\"M10 20a2 2 0 004 0\"/>", "bellx": "<path d=\"M8.7 3.7A6 6 0 0118 9c0 2.4.5 4 1.1 5M6.3 6.3C6.1 7.1 6 8 6 9c0 6-2.5 7.5-2.5 7.5H15\"/><path d=\"M10 20a2 2 0 004 0M3 3l18 18\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-4-4\"/>", "more": "<circle cx=\"12\" cy=\"5\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"19\" r=\"1.4\" fill=\"currentColor\"/>", "back": "<path d=\"M15 5l-7 7 7 7\"/>", "chev": "<path d=\"M9 5l7 7-7 7\"/>", "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>", "trash": "<path d=\"M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6\"/>", "eraser": "<path d=\"M8 20h12M5.5 14.5l8-8a2.1 2.1 0 013 0l2 2a2.1 2.1 0 010 3L11 19H8l-2.5-2.5a1.4 1.4 0 010-2z\"/>", "logout": "<path d=\"M10 4H5v16h5M15 8l4 4-4 4M19 12H9\"/>", "reply": "<path d=\"M9 7L4 12l5 5\"/><path d=\"M4 12h10a6 6 0 016 6v1\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M5 15V6a2 2 0 012-2h9\"/>", "edit": "<path d=\"M4 20h4L19 9a2.8 2.8 0 00-4-4L4 16z\"/><path d=\"M13.5 6.5l4 4\"/>", "forward": "<path d=\"M15 7l5 5-5 5\"/><path d=\"M20 12H10a6 6 0 00-6 6v1\"/>", "eyeoff": "<path d=\"M3 3l18 18M10.6 6.2A9.8 9.8 0 0112 6c5 0 8.5 4.5 9.5 6a15 15 0 01-3.2 3.6M6.5 7.6C4.4 9 3 11 2.5 12c1 1.6 4.5 6 9.5 6 1.5 0 2.8-.4 4-1\"/><path d=\"M9.9 9.9a3 3 0 004.2 4.2\"/>", "image": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"3\"/><circle cx=\"9\" cy=\"10\" r=\"1.8\"/><path d=\"M21 16l-5-5-9 9\"/>", "camera": "<path d=\"M4 8h3l2-3h6l2 3h3v11H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.6\"/>", "music": "<path d=\"M9 18V6l11-2v12\"/><circle cx=\"6.5\" cy=\"18\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"16\" r=\"2.5\"/>", "file": "<path d=\"M6 3h8l5 5v13H6z\"/><path d=\"M14 3v5h5M9 13h6M9 17h6\"/>", "play": "<path d=\"M7 4.5v15l13-7.5z\" fill=\"currentColor\"/>", "alert": "<path d=\"M12 3l10 18H2z\"/><path d=\"M12 10v5M12 18.2v.1\"/>", "clip": "<path d=\"M20 11.5l-8.2 8.2a5 5 0 01-7-7L13.5 4a3.3 3.3 0 014.7 4.7l-8.6 8.6a1.7 1.7 0 01-2.4-2.4L15 7\"/>", "smile": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8 14a4.5 4.5 0 008 0\"/><path d=\"M9 9.5v.1M15 9.5v.1\" stroke-width=\"2.6\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "settings": "<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z\"/>", "link": "<path d=\"M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1 1\"/><path d=\"M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1-1\"/>", "palette": "<path d=\"M12 3a9 9 0 100 18c1.4 0 2-.9 2-1.8 0-1.2-1-1.5-1-2.7 0-1 .8-1.8 1.9-1.8H17a4 4 0 004-4c0-4.4-4-7.7-9-7.7z\"/><circle cx=\"7.5\" cy=\"11\" r=\"1.1\"/><circle cx=\"10.5\" cy=\"7\" r=\"1.1\"/><circle cx=\"15.5\" cy=\"7.5\" r=\"1.1\"/>", "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"3\"/><path d=\"M8 11V8a4 4 0 018 0v3\"/>", "db": "<ellipse cx=\"12\" cy=\"6\" rx=\"7.5\" ry=\"3\"/><path d=\"M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v6M12 7.5v.1\"/>", "key": "<circle cx=\"8\" cy=\"15\" r=\"4\"/><path d=\"M11 12l9-9M16 7l3 3M14 9l2 2\"/>", "mail": "<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"3\"/><path d=\"M4 7l8 6 8-6\"/>", "cake": "<path d=\"M4 20h16v-6a2 2 0 00-2-2H6a2 2 0 00-2 2zM4 16c2 1.5 3 1.5 4 0s2-1.5 4 0 3 1.5 4 0 2-1.5 4 0\"/><path d=\"M12 12V8M12 5.6c-.9-1-.9-1.5 0-2.6.9 1.1.9 1.6 0 2.6z\"/>", "download": "<path d=\"M12 4v11M7 11l5 5 5-5M5 20h14\"/>", "refresh": "<path d=\"M20 11a8 8 0 00-14-4.5L4 9M4 4v5h5M4 13a8 8 0 0014 4.5L20 15M20 20v-5h-5\"/>", "ban": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M5.6 5.6l12.8 12.8\"/>", "clock": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/>", "down": "<path d=\"M12 5v14M6 13l6 6 6-6\"/>"};
 const SV=n=>ICONS[n]?'<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+ICONS[n]+'</svg>':"";
 const mkI=(n,c)=>{const e=h("span",c||"");e.innerHTML=SV(n);return e};
 const mkB=(n,c,label)=>{const b=h("button",c||"");b.type="button";b.innerHTML=SV(n);if(label)b.setAttribute("aria-label",label);return b};
@@ -472,7 +515,8 @@ const BG0={violet:"#08050e",ocean:"#060d1a",sunset:"#12070a",emerald:"#04110d",r
 function applyS(){const r=document.documentElement;r.dataset.theme=S.theme;r.dataset.wall=S.wall;r.style.setProperty("--fs",S.fs+"px");r.style.setProperty("--br",S.br+"px");r.classList.toggle("noblur",!S.blur);r.classList.toggle("noanim",!S.anim);const m=document.querySelector("meta[name=theme-color]");if(m)m.content=BG0[S.theme]||"#08050e"}
 const saveS=()=>{LS.s("maqw_s",S);applyS()};
 applyS();
-const REACTS=["👍","❤️","😂","😮","😢","🔥","👎","🎉"];
+const REACTS=["👍","❤️","😂","😮","😢","🔥","👎","🎉","🥰","👏","🤔","🤯","😱","🤩","🙏","👌","💯","🤣","⚡","🏆","💔","😍","🍓","💋","😈","😴","😭","🤓","👻","👀","🙈","😇","🤝","🤗","🗿","🤡","🥱","😎","💩","⭐"];
+const QUICK=[1,0,5,2,3,4];
 const EMO="😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😋 😛 😜 🤪 😎 🤩 🥳 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👻 💀 👽 🤖 💩 👍 👎 👌 🤞 🤟 🤘 🤙 👈 👉 👆 👇 ✋ 👋 🤝 🙏 💪 👏 🙌 ❤️ 🧡 💛 💚 💙 💜 🖤 🤍 💔 💕 💞 💓 💗 💖 💘 🔥 ✨ ⭐ 🌟 💫 🎉 🎊 🎁 🏆 ⚡ 💯 ✅ ❌ ❓ ❗".split(" ");
 const MAXF=6*1024*1024,CHSZ=750000;
 const AE={"auth/email-already-in-use":"Эта почта уже зарегистрирована","auth/weak-password":"Пароль слишком короткий (минимум 6 символов)","auth/invalid-email":"Некорректная почта","auth/invalid-credential":"Неверная почта или пароль","auth/network-request-failed":"Нет связи с интернетом","auth/operation-not-allowed":"Вход по почте не включён в Firebase (Authentication)","auth/too-many-requests":"Слишком много попыток, подожди немного"};
@@ -504,7 +548,160 @@ let uid="",prof=null,cur=null,mode="login",registering=false,unChats=null,hb=nul
 const cache={},chats=new Map(),urls=new Map(),seenAt={};let listData=[];
 let Lx={pin:[],mute:[],clr:{},drafts:{},hm:{}};
 const saveL=()=>LS.s("maqw_l_"+uid,Lx);
-const CH=cid=>doc(db,"chats",cid);let att=[],attCid="";const ATT_MAX=10;
+const CH=cid=>doc(db,"chats",cid);
+/* ===== реакции: контекстное меню как в Telegram ===== */
+let popKey=null,cxEl=null;
+function closeCx(){if(cxEl){cxEl.remove();cxEl=null}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCx()});
+function ctxMenu(items,id){
+  closeCx();
+  const c=cur,w=c&&c.els.get(id),bub=w&&w.querySelector(".msg"),d=c&&c.docs.find(x=>x.id===id);
+  if(!c||!d)return;
+  const m=d.data({serverTimestamps:"estimate"}),me=m.from===uid,rx=m.reactions||{};
+  const mk=Object.keys(rx).find(k=>(rx[k]||[]).includes(uid)),myI=mk!=null?+mk.slice(1):-1;
+  const VW=innerWidth,VH=innerHeight,r=bub?bub.getBoundingClientRect():null,fits=!!r&&r.height<VH*.45&&r.width>20;
+  const cx=h("div","");cx.id="cx";if(!fits)cx.className="sheet";document.body.append(cx);cxEl=cx;
+  cx.onclick=e=>{if(e.target===cx)closeCx()};
+  let cl=null;
+  if(fits){cl=bub.cloneNode(true);cl.removeAttribute("data-id");cl.classList.add("cx-b");cl.querySelectorAll("video,audio").forEach(v=>v.remove());cl.style.cssText="left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px";cx.append(cl)}
+  const pw=h("div","cx-p"),pill=h("div","rxp lq"),mw=h("div","cx-m"),mn=h("div","menu lq");
+  pw.append(pill);mw.append(mn);
+  items.forEach(i=>{const x=h("button","mi"+(i.d?" dng":""));const q=h("span","ic");if(ICONS[i.i])q.innerHTML=SV(i.i);else q.textContent=i.i||"";x.append(q,h("span","",i.t));x.onclick=()=>{closeCx();i.f()};mn.append(x)});
+  const pick=i=>{closeCx();react(id,i)};
+  const setPill=exp=>{
+    pill.replaceChildren();pill.className=exp?"rxg lq":"rxp lq"+(me?" r":"");
+    if(!exp){QUICK.forEach((i,k)=>{const b=h("button","rxe"+(i===myI?" on":""),REACTS[i]);b.style.setProperty("--i",k);b.onclick=()=>pick(i);pill.append(b)});
+      const x=mkB("chevd","rxm","Ещё");x.onclick=()=>{setPill(true);mw.style.display="none";if(fits)requestAnimationFrame(layout)};pill.append(x)}
+    else REACTS.forEach((e,i)=>{const b=h("button","rxe"+(i===myI?" on":""),e);b.style.setProperty("--i",i);b.onclick=()=>pick(i);pill.append(b)});
+  };
+  cx.append(pw,mw);setPill(false);
+  function layout(){
+    const pww=pw.offsetWidth,ph=pw.offsetHeight,mww=mw.offsetWidth,mh=mw.style.display==="none"?0:mw.offsetHeight,minTop=14,maxB=VH-12;
+    let sh=0;const pt=r.top-ph-8;if(pt<minTop)sh=minTop-pt;
+    const bot=r.bottom+sh+8+mh;if(bot>maxB)sh-=bot-maxB;
+    if(pt+sh<minTop)sh=minTop-pt;
+    const cl2=(x,wd)=>Math.max(8,Math.min(x,VW-8-wd));
+    cl.style.top=(r.top+sh)+"px";
+    pw.style.top=(r.top+sh-ph-8)+"px";pw.style.left=cl2(me?r.right-pww:r.left,pww)+"px";
+    mw.style.top=(r.bottom+sh+8)+"px";mw.style.left=cl2(me?r.right-mww:r.left,mww)+"px";
+  }
+  if(fits){pw.style.top=(r.top-60)+"px";mw.style.top=(r.bottom+8)+"px";layout()}
+}
+
+/* ===== друзья и приватность ===== */
+const isFriend=id=>(prof.friends||[]).includes(id);
+function frState(id){
+  const c=chats.get(dmId(id));
+  if(isFriend(id)||(c&&c.fr&&c.fr.st==="a"))return"friend";
+  if(c&&c.fr){if(c.fr.st==="p")return c.fr.by===uid?"out":"in";if(c.fr.st==="d"&&c.fr.by===uid)return"declined"}
+  return"none";
+}
+const reqsIn=()=>[...chats.values()].filter(c=>c.type==="dm"&&c.fr&&c.fr.st==="p"&&c.fr.by&&c.fr.by!==uid).map(c=>({cid:c.id,id:c.fr.by}));
+const reqsOut=()=>[...chats.values()].filter(c=>c.type==="dm"&&c.fr&&c.fr.st==="p"&&c.fr.by===uid).map(c=>({cid:c.id,id:(c.members||[]).find(x=>x!==uid)})).filter(r=>r.id);
+const showBday=u=>u.id===uid||!u.pvBday||u.pvBday==="all"||(u.pvBday==="friends"&&isFriend(u.id));
+async function dmAccess(id){
+  if(!id||id===uid)return true;
+  const t=await getUser(id,15000);
+  if(!t.dmFriends)return true;
+  if(isFriend(id))return true;
+  const c=chats.get(dmId(id));
+  if(c&&c.fr&&c.fr.st==="a")return true;
+  if(c&&!c.fr&&c.last)return true;
+  return false;
+}
+async function sendFriendReq(id){
+  try{
+    const t=await getUser(id,0);
+    if(t.reqOff)return toast("Этот пользователь не принимает заявки в друзья");
+    const st=frState(id);
+    if(st==="friend"||st==="out")return;
+    if(st==="declined")return toast("Заявка уже была отклонена");
+    if(st==="in")return acceptReq(id);
+    await setDoc(CH(dmId(id)),{type:"dm",members:[uid,id].sort(),fr:{by:uid,st:"p"},frAt:serverTimestamp()},{merge:true});
+    toast("Заявка отправлена");
+  }catch(e){toast("Ошибка: "+(e.code||e.message))}
+}
+async function acceptReq(id){
+  try{
+    await updateDoc(CH(dmId(id)),{"fr.st":"a"});
+    await updateDoc(doc(db,"users",uid),{friends:arrayUnion(id),contacts:arrayUnion(id)});
+    prof.friends=[...new Set([...(prof.friends||[]),id])];prof.contacts=[...new Set([...(prof.contacts||[]),id])];
+    toast("Вы теперь друзья");renderContacts();updReqBadge();
+  }catch(e){toast("Ошибка: "+(e.code||e.message))}
+}
+async function declineReq(id){try{await updateDoc(CH(dmId(id)),{"fr.st":"d"});toast("Заявка отклонена");updReqBadge()}catch(e){toast("Ошибка: "+(e.code||e.message))}}
+async function cancelReq(id){try{await updateDoc(CH(dmId(id)),{fr:deleteField()});toast("Заявка отменена")}catch(e){toast("Ошибка: "+(e.code||e.message))}}
+async function removeFriend(id){
+  if(!confirm("Удалить из друзей?"))return;
+  try{
+    await updateDoc(CH(dmId(id)),{"fr.st":"x"}).catch(()=>{});
+    await updateDoc(doc(db,"users",uid),{friends:arrayRemove(id)});
+    prof.friends=(prof.friends||[]).filter(x=>x!==id);toast("Удалён из друзей");renderContacts();
+  }catch(e){toast("Ошибка: "+(e.code||e.message))}
+}
+function syncFriends(){
+  const want=new Set(prof.friends||[]),add=[];let ch=false;
+  chats.forEach(c=>{
+    if(c.type!=="dm"||!c.fr)return;
+    const o=(c.members||[]).find(x=>x!==uid);if(!o||o===uid)return;
+    if(c.fr.st==="a"&&!want.has(o)){want.add(o);add.push(o);ch=true}
+    if(c.fr.st==="x"&&want.has(o)){want.delete(o);ch=true}
+  });
+  if(!ch)return;
+  const patch={friends:[...want]};if(add.length)patch.contacts=arrayUnion(...add);
+  updateDoc(doc(db,"users",uid),patch).then(()=>{prof.friends=[...want];if(add.length)prof.contacts=[...new Set([...(prof.contacts||[]),...add])];renderContacts()}).catch(()=>{});
+}
+let frInit=true;const frSeen={};
+function notifyFr(s){
+  s.docChanges().forEach(x=>{
+    if(x.type==="removed")return;
+    const c=x.doc.data();if(c.type!=="dm"||!c.fr)return;
+    const key=c.fr.st+":"+c.fr.by,prev=frSeen[x.doc.id];frSeen[x.doc.id]=key;
+    if(frInit||prev===key)return;
+    const o=(c.members||[]).find(y=>y!==uid);
+    if(c.fr.st==="p"&&c.fr.by!==uid){getUser(c.fr.by,60000).then(u=>toast((u.name||"Кто-то")+" хочет добавить вас в друзья",4500));if(S.sound)beep()}
+    else if(c.fr.st==="a"&&c.fr.by===uid&&o){getUser(o,60000).then(u=>toast((u.name||"Пользователь")+" принял(а) вашу заявку",4500))}
+  });
+  frInit=false;
+}
+function updReqBadge(){const n=reqsIn().length,b=E("cbc");if(!b)return;b.style.display=n?"grid":"none";b.textContent=n>9?"9+":n}
+let reqTok=0;
+async function renderReqs(){
+  const box=E("creq");if(!box)return;const tok=++reqTok;
+  const inc=reqsIn(),out=reqsOut();
+  if(!inc.length&&!out.length){box.replaceChildren();return}
+  const us=await Promise.all([...inc,...out].map(r=>getUser(r.id,60000)));
+  if(tok!==reqTok)return;
+  box.replaceChildren();
+  if(inc.length){
+    box.append(h("div","sub lbl","Заявки в друзья · "+inc.length));
+    inc.forEach((r,i)=>{
+      const u=us[i],row=urow(u,"@"+u.username+" · заявка");row.classList.add("urq");
+      const ok=mkB("check","frb ok","Принять"),no=mkB("close","frb no","Отклонить");
+      ok.onclick=e=>{e.stopPropagation();acceptReq(r.id)};no.onclick=e=>{e.stopPropagation();declineReq(r.id)};
+      row.onclick=()=>openProfile(r.id);row.append(ok,no);box.append(row)});
+  }
+  if(out.length){
+    box.append(h("div","sub lbl","Отправленные заявки · "+out.length));
+    out.forEach((r,j)=>{
+      const u=us[inc.length+j],row=urow(u,"@"+u.username+" · ждёт ответа");row.classList.add("urq");
+      const no=mkB("close","frb no","Отменить заявку");no.onclick=e=>{e.stopPropagation();cancelReq(r.id)};
+      row.onclick=()=>openProfile(r.id);row.append(no);box.append(row)});
+  }
+}
+function ndBar(on){
+  const n=E("nd");if(!on){n.style.display="none";return}
+  const c=cur,id=c.ou,st=frState(id);n.replaceChildren();
+  n.append(h("div","sub","Этот человек принимает сообщения только от друзей"));
+  let b=null;
+  if(st==="none"){const t=cache[id];if(t&&t.reqOff)n.append(h("div","sub","Он не принимает заявки в друзья"));else{b=mkBT("btn","userplus","Добавить в друзья");b.onclick=()=>sendFriendReq(id)}}
+  else if(st==="out"){b=mkBT("btn g","clock","Заявка отправлена · отменить");b.onclick=()=>cancelReq(id)}
+  else if(st==="in"){b=mkBT("btn","check","Принять заявку");b.onclick=()=>acceptReq(id)}
+  else if(st==="declined")n.append(h("div","sub","Заявка отклонена"));
+  if(b)n.append(b);
+  n.style.display="flex";
+}
+let att=[],attCid="";const ATT_MAX=10;
 /* ===== несколько аккаунтов (до 3) ===== */
 const ACC_MAX=3;
 const accs=()=>LS.g("maqw_accs",[]),setAccs=a=>LS.s("maqw_accs",a);
@@ -578,14 +775,14 @@ async function ent(c){
   if(c.type==="dm"){const o=(c.members||[]).find(x=>x!==uid)||uid;if(o===uid)return{name:"Избранное",icon:"bookmark",dm:1,self:1,id:o,u:SELF()};const u=await getUser(o,60000);return{name:u.name,avatar:u.avatar,dm:1,id:o,u}}
   return{name:c.title||"Без названия",avatar:c.avatar||"",id:c.id,icon:c.avatar?"":(c.type==="channel"?"megaphone":"users")}}
 function av(x,s=48,dot){const w=h("div","avw"),e=h("div","av");w.style.width=w.style.height=s+"px";e.style.fontSize=s*.4+"px";if(x.avatar)e.style.backgroundImage="url("+x.avatar+")";else if(x.icon&&ICONS[x.icon])e.innerHTML=SV(x.icon);else e.textContent=x.icon||(x.name||"?")[0].toUpperCase();w.append(e);const u=x.u||x;if(dot&&u.lastSeen&&online(u))w.append(h("i","dot"));return w}
-function pcard(u){const c=h("div","pc glass"),b=h("div","banner");if(u.banner)b.style.backgroundImage="url("+u.banner+")";c.append(b,av(u,88),h("h3","",u.name),h("div","sub","@"+u.username));const st=h("div","sub "+(online(u)?"on":""),u.id===uid?"это ты":seen(u));c.append(st);if(u.bio)c.append(h("p","",u.bio));if(u.bday){const d=new Date(u.bday);if(!isNaN(d))c.append(mkL("cake",d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"}),"sub"))}return c}
+function pcard(u){const c=h("div","pc glass"),b=h("div","banner");if(u.banner)b.style.backgroundImage="url("+u.banner+")";c.append(b,av(u,88),h("h3","",u.name),h("div","sub","@"+u.username));const st=h("div","sub "+(online(u)?"on":""),u.id===uid?"это ты":seen(u));c.append(st);if(u.bio)c.append(h("p","",u.bio));if(u.bday&&showBday(u)){const d=new Date(u.bday);if(!isNaN(d))c.append(mkL("cake",d.toLocaleDateString("ru-RU",{day:"numeric",month:"long"}),"sub"))}return c}
 function urow(u,sub){const r=h("div","row glass");r.append(av(u,50,true));const m=h("div","grow");m.append(h("b","",u.name),h("div","sub",sub));r.append(m);return r}
 
 /* ================= оверлеи ================= */
 function ov(node,kind){const o=E("ov");o.className=kind||"";o.firstChild.replaceChildren(node);o.style.display="flex"}
-function closeOv(){const o=E("ov");o.style.display="none";o.firstChild.replaceChildren()}
+function closeOv(){closeCx();const o=E("ov");o.style.display="none";o.firstChild.replaceChildren()}
 E("ov").onclick=e=>{if(e.target===E("ov"))closeOv()};
-function menu(items,top){const b=h("div","menu lq");if(top)b.append(top);items.filter(Boolean).forEach(i=>{const x=h("button","mi"+(i.d?" dng":""));const q=h("span","ic");if(ICONS[i.i])q.innerHTML=SV(i.i);else q.textContent=i.i||"";x.append(q,h("span","",i.t));x.onclick=()=>{closeOv();i.f()};b.append(x)});ov(b,"b")}
+function menu(items,top){if(typeof top==="string")return ctxMenu(items.filter(Boolean),top);const b=h("div","menu lq");if(top)b.append(top);items.filter(Boolean).forEach(i=>{const x=h("button","mi"+(i.d?" dng":""));const q=h("span","ic");if(ICONS[i.i])q.innerHTML=SV(i.i);else q.textContent=i.i||"";x.append(q,h("span","",i.t));x.onclick=()=>{closeOv();i.f()};b.append(x)});ov(b,"b")}
 function viewImg(src){E("viewer").firstChild.src=src;E("vdl").href=src;E("viewer").style.display="flex"}
 E("vx").onclick=()=>E("viewer").style.display="none";
 
@@ -674,9 +871,9 @@ function listenChats(){
   unChats&&unChats();
   unChats=onSnapshot(query(collection(db,"chats"),where("members","array-contains",uid)),async s=>{
     chats.clear();s.docs.forEach(d=>{const x={id:d.id,...d.data({serverTimestamps:"estimate"})};if(!x.type)x.type="dm";chats.set(d.id,x)});
-    notify(s);
+    notify(s);notifyFr(s);syncFriends();updReqBadge();
     listData=await Promise.all([...chats.values()].map(async c=>({c,e:await ent(c)})));
-    drawList();
+    drawList();renderReqs();if(cur&&cur.type==="dm"){cur.acT=0;bars()}
   },e=>E("chatlist").textContent="Ошибка: "+e.code);
 }
 function notify(s){
@@ -688,7 +885,7 @@ function notify(s){
     if(Lx.mute.includes(x.doc.id))return;
     if(cur&&cur.cid===x.doc.id&&!document.hidden)return;
     if(S.sound)beep();if(S.vib&&navigator.vibrate)navigator.vibrate(60);
-    if(document.hidden&&S.notif&&window.Notification&&Notification.permission==="granted"){try{const n=(cache[c.lastFrom]||{}).name||c.title||"MAQW",o={body:c.last,icon:"icons/icon-192.png",badge:"icons/favicon-64.png",tag:"maqw-"+x.doc.id};if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(n,o)).catch(()=>{try{new Notification(n,o)}catch{}});else new Notification(n,o)}catch{}}
+    if(document.hidden&&S.notif&&window.Notification&&Notification.permission==="granted"){try{const n=(cache[c.lastFrom]||{}).name||c.title||"MAQW",o={body:c.last,icon:"icons/icon-192.png?v=4",badge:"icons/favicon-64.png?v=4",tag:"maqw-"+x.doc.id};if(navigator.serviceWorker&&navigator.serviceWorker.ready)navigator.serviceWorker.ready.then(r=>r.showNotification(n,o)).catch(()=>{try{new Notification(n,o)}catch{}});else new Notification(n,o)}catch{}}
   });
   initial=false;
 }
@@ -780,7 +977,9 @@ function bars(){
   const c=cur,d=c.data||{},p=E("pin");
   if(d.pinned){p.style.display="flex";p.replaceChildren(mkI("pin","pb"),h("span","grow",d.pinned.text||"Сообщение"));p.onclick=()=>jump(d.pinned.id)}else p.style.display="none";
   const ro=c.type==="channel"&&d.owner&&d.owner!==uid;
-  E("mf").style.display=(ro||rec)?"none":"flex";E("ro").style.display=ro?"flex":"none";
+  if(c.type==="dm"&&c.ou&&c.ou!==uid&&Date.now()-(c.acT||0)>1200){c.acT=Date.now();dmAccess(c.ou).then(ok=>{if(cur===c&&!!c.noDm===ok){c.noDm=!ok;bars()}}).catch(()=>{})}
+  const nd=!!c.noDm;
+  E("mf").style.display=(ro||rec||nd)?"none":"flex";E("ro").style.display=ro?"flex":"none";ndBar(nd);
   {const m2=Lx.mute.includes(c.cid);E("rom").replaceChildren(mkI(m2?"bell":"bellx"),document.createTextNode(m2?"Включить звук":"Выключить звук"))}
 }
 E("rom").onclick=()=>{const id=cur.cid;Lx.mute=Lx.mute.includes(id)?Lx.mute.filter(x=>x!==id):[...Lx.mute,id];saveL();bars()};
@@ -842,7 +1041,7 @@ function buildMsg(d,m,t){
   if(m.type==="image"){const i=h("img","pimg");i.src=m.data;if(m.w&&m.h){i.width=m.w;i.height=m.h;i.style.aspectRatio=m.w+"/"+m.h}i.loading="lazy";i.onclick=()=>viewImg(m.data);b.append(i);if(m.text){const p=h("div","tx");p.append(rich(m.text));b.append(p)}}
   else if(m.type==="text"||!m.type){const p=h("div","tx");p.append(rich(m.text||""));b.append(p)}
   else{b.append(fileCard(c.cid,m,id));if(m.text){const p=h("div","tx");p.append(rich(m.text));b.append(p)}}
-  if(m.reactions){const rc=h("div","rcs");REACTS.forEach((e,i)=>{const a=m.reactions["r"+i];if(a&&a.length){const x=h("button","rc"+(a.includes(uid)?" mine":""),e+" "+a.length);x.onclick=ev=>{ev.stopPropagation();react(id,i)};rc.append(x)}});if(rc.childNodes.length)b.append(rc)}
+  if(m.reactions){const rc=h("div","rcs");REACTS.forEach((e,i)=>{const a=m.reactions["r"+i];if(a&&a.length){const pop=popKey&&popKey.id===id&&popKey.i===i&&Date.now()-popKey.t<1500,x=h("button","rc"+(a.includes(uid)?" mine":"")+(pop?" pop":""));x.append(h("span","e",e),h("span","n",String(a.length)));x.onclick=ev=>{ev.stopPropagation();react(id,i)};rc.append(x)}});if(rc.childNodes.length)b.append(rc)}
   const mt=h("div","meta");if(m.edited)mt.append(h("span","","изм."));mt.append(h("span","",tm(t)));
   if(me){const tk=h("span","","✓");mt.append(tk);c.tk.set(id,{el:tk,t,p:d.metadata.hasPendingWrites})}
   b.append(mt);w.append(b);return w;
@@ -874,7 +1073,7 @@ E("msgs").onclick=e=>{if(e.target.closest("a,button,audio,video,img,.rq"))return
 function msgMenu(id){
   const c=cur,d=c.docs.find(x=>x.id===id);if(!d)return;
   const m=d.data({serverTimestamps:"estimate"}),me=m.from===uid,ro=c.type==="channel"&&c.data&&c.data.owner!==uid,own=c.data&&c.data.owner===uid;
-  const top=h("div","rxs");REACTS.forEach((e,i)=>{const b=h("button","rx",e);b.onclick=()=>{closeOv();react(id,i)};top.append(b)});
+  const top=id;
   const pinned=c.data&&c.data.pinned&&c.data.pinned.id===id;
   menu([
     !ro&&{i:"reply",t:"Ответить",f:()=>setReply(id,m)},
@@ -887,8 +1086,11 @@ function msgMenu(id){
 }
 async function react(id,i){
   const c=cur,d=c.docs.find(x=>x.id===id);if(!d)return;
-  const a=(d.data().reactions||{})["r"+i]||[];
-  try{await updateDoc(doc(db,"chats",c.cid,"messages",id),{["reactions.r"+i]:a.includes(uid)?arrayRemove(uid):arrayUnion(uid)})}catch(e){toast("Ошибка: "+e.code)}
+  const rx=d.data().reactions||{},had=(rx["r"+i]||[]).includes(uid),up={};
+  Object.keys(rx).forEach(k=>{if(k!=="r"+i&&(rx[k]||[]).includes(uid))up["reactions."+k]=arrayRemove(uid)});
+  up["reactions.r"+i]=had?arrayRemove(uid):arrayUnion(uid);
+  if(!had)popKey={id,i,t:Date.now()};S.vib&&navigator.vibrate&&navigator.vibrate(10);
+  try{await updateDoc(doc(db,"chats",c.cid,"messages",id),up)}catch(e){toast("Ошибка: "+(e.code||e.message))}
 }
 function setReply(id,m){const c=cur;c.edit=null;c.reply={id,name:m.from===uid?"Вы":((cache[m.from]||{}).name||"…"),text:previewOf(m).slice(0,80)};showRE("Ответ: "+c.reply.name,c.reply.text);E("mt").focus()}
 function setEdit(id,m){const c=cur;c.reply=null;c.edit=id;showRE("Редактирование",(m.text||"").slice(0,80));E("mt").value=m.text||"";grow();toggleSend();E("mt").focus()}
@@ -916,6 +1118,7 @@ async function fwdTo(T,m){
 
 /* --- отправка --- */
 async function post(T,m,prev){
+  if(T.type==="dm"){const o=T.members.find(x=>x!==uid);if(o&&!(await dmAccess(o)))throw new Error("Этот человек принимает сообщения только от друзей")}
   const others=T.members.filter(x=>x!==uid),un={};if(others.length<=200)others.forEach(x=>un[x]=increment(1));
   const base={last:prev,lastAt:serverTimestamp(),lastFrom:uid,unread:un,typing:{[uid]:0}};
   if(T.type==="dm"){base.type="dm";base.members=T.members}
@@ -1044,14 +1247,14 @@ async function joinOrOpen(cid){
   }catch(e){toast("Ошибка: "+e.code)}
 }
 async function renderContacts(){
-  const act=E("cact");act.replaceChildren();
+  const act=E("cact");act.replaceChildren();renderReqs();
   const a=(t,f,n)=>{const b=mkBT("btn g",n,t);b.onclick=f;act.append(b)};
   a("Избранное (заметки для себя)",()=>openChat(dmId(uid),uid),"bookmark");a("Новая группа",()=>openNew("group"),"users");a("Новый канал",()=>openNew("channel"),"megaphone");a("Пригласить друзей",shareApp,"link");
   const box=E("clist");box.replaceChildren();const ids=prof.contacts||[];
   if(!ids.length){box.append(h("p","empty","Контактов пока нет. Найди человека по @юзернейму."));return}
   const us=(await Promise.all(ids.map(i=>getUser(i,60000)))).sort((a,b)=>(a.name||"").localeCompare(b.name||""));
   box.append(h("div","sub lbl","Мои контакты · "+us.length));
-  us.forEach(u=>{const r=urow(u,seen(u));r.firstChild.onclick=e=>{e.stopPropagation();openProfile(u.id)};lp(r,()=>menu([{i:"user",t:"Профиль",f:()=>openProfile(u.id)},{i:"trash",t:"Удалить из контактов",d:1,f:()=>rmContact(u.id)}]),()=>openChat(dmId(u.id),u.id));box.append(r)});
+  us.forEach(u=>{const r=urow(u,(isFriend(u.id)?"Друг · ":"")+seen(u));r.firstChild.onclick=e=>{e.stopPropagation();openProfile(u.id)};lp(r,()=>menu([{i:"user",t:"Профиль",f:()=>openProfile(u.id)},{i:"trash",t:"Удалить из контактов",d:1,f:()=>rmContact(u.id)}]),()=>openChat(dmId(u.id),u.id));box.append(r)});
 }
 async function rmContact(id){try{await updateDoc(doc(db,"users",uid),{contacts:arrayRemove(id)});prof.contacts=(prof.contacts||[]).filter(x=>x!==id);renderContacts();toast("Удалён из контактов")}catch(e){toast("Ошибка: "+e.code)}}
 async function share(url,text){try{if(navigator.share)await navigator.share({title:"MAQW",text,url});else{await navigator.clipboard.writeText(url);toast("Ссылка скопирована")}}catch{}}
@@ -1061,7 +1264,15 @@ async function openProfile(id){
   const b=h("div");b.append(pcard(u));
   const p=h("div","col glass");p.style.cssText="padding:14px;border-radius:26px";
   if(id!==uid){
-    const w=mkBT("btn","chat","Написать");w.onclick=()=>openChat(dmId(id),id);p.append(w);
+    const st=frState(id),can=await dmAccess(id);
+    if(can){const w=mkBT("btn","chat","Написать");w.onclick=()=>openChat(dmId(id),id);p.append(w)}
+    else p.append(h("div","sub hint","Этот человек принимает сообщения только от друзей. Отправь заявку, и после принятия сможешь писать."));
+    const rf=()=>openProfile(id);
+    if(st==="none"){if(u.reqOff)p.append(h("div","sub hint","Этот пользователь не принимает заявки в друзья"));else{const f=mkBT(can?"btn g":"btn","userplus","Добавить в друзья");f.onclick=async()=>{await sendFriendReq(id);rf()};p.append(f)}}
+    else if(st==="out"){const f=mkBT("btn g","clock","Заявка отправлена · отменить");f.onclick=async()=>{await cancelReq(id);rf()};p.append(f)}
+    else if(st==="in"){const f=mkBT("btn","check","Принять заявку"),g=mkBT("btn g","close","Отклонить");f.onclick=async()=>{await acceptReq(id);rf()};g.onclick=async()=>{await declineReq(id);rf()};p.append(f,g)}
+    else if(st==="declined")p.append(h("div","sub hint","Заявка в друзья была отклонена"));
+    else if(st==="friend"){const f=mkBT("btn g","userx","Удалить из друзей");f.onclick=async()=>{await removeFriend(id);rf()};p.append(f)}
     const has=(prof.contacts||[]).includes(id),c=mkBT("btn g",has?"trash":"plus",has?"Удалить из контактов":"В контакты");
     c.onclick=async()=>{try{await updateDoc(doc(db,"users",uid),{contacts:has?arrayRemove(id):arrayUnion(id)});prof.contacts=has?(prof.contacts||[]).filter(x=>x!==id):[...(prof.contacts||[]),id];renderContacts();closeOv();toast(has?"Удалён из контактов":"Добавлен в контакты")}catch(e){toast("Ошибка: "+e.code)}};p.append(c);
   }
@@ -1207,10 +1418,26 @@ function pgNotif(){page("Уведомления и звук",b=>{
   b.append(h("p","sub hint","Звук для отдельного чата выключается долгим нажатием на чат в списке."));
 })}
 function pgPriv(){page("Конфиденциальность",b=>{
-  const s=secBox(b),r=h("label","srow"),t=h("div","grow");t.append(h("b","","Скрыть «в сети»"),h("div","sub","Другие увидят «был(а) недавно». Ты их статус тоже не будешь обновлять."));t.firstChild.style.whiteSpace="normal";
-  const i=h("input");i.type="checkbox";i.checked=!!prof.hideSeen;i.onchange=async()=>{try{await updateDoc(doc(db,"users",uid),{hideSeen:i.checked});prof.hideSeen=i.checked}catch(e){i.checked=!i.checked;toast("Ошибка: "+e.code)}};
-  const k=h("span","sw");k.append(i,h("i"));r.append(t,k);s.append(r);
-  b.append(h("p","sub hint","Почту видишь только ты. Другие люди видят имя, @юзернейм, аватар, баннер, описание и день рождения."));
+  const upd=async patch=>{try{await updateDoc(doc(db,"users",uid),patch);Object.assign(prof,patch);return true}catch(e){toast("Ошибка: "+(e.code||e.message));return false}};
+  let wn=null;
+  const note=()=>{if(wn)wn.textContent=prof.dmFriends&&prof.reqOff?"Внимание: сообщения только от друзей и заявки выключены. Новые люди не смогут с тобой связаться.":""};
+  const tog=(s,key,label,desc,inv)=>{
+    const r=h("label","srow"),t=h("div","grow");t.append(h("b","",label));if(desc)t.append(h("div","sub wrap",desc));t.firstChild.style.whiteSpace="normal";
+    const i=h("input");i.type="checkbox";i.checked=inv?!prof[key]:!!prof[key];
+    i.onchange=async()=>{const v=inv?!i.checked:i.checked;if(await upd({[key]:v}))note();else i.checked=!i.checked};
+    const k=h("span","sw");k.append(i,h("i"));r.append(t,k);s.append(r)};
+  const seg=(s,key,label,opts)=>{
+    const r=h("div","srow col2");r.append(h("b","",label));const g=h("div","seg");
+    opts.forEach(([v,t])=>{const bt=h("button",(prof[key]||opts[0][0])===v?"on":"",t);bt.type="button";bt.onclick=async()=>{if(await upd({[key]:v}))g.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===bt))};g.append(bt)});
+    r.append(g);s.append(r)};
+  const s1=secBox(b,"Сообщения и друзья");
+  tog(s1,"dmFriends","Писать мне могут только друзья","Незнакомые не смогут начать с тобой чат: им нужно отправить заявку в друзья. Уже начатые переписки сохраняются.");
+  tog(s1,"reqOff","Принимать заявки в друзья","Если выключить, никто не сможет отправить тебе заявку.",true);
+  wn=h("p","sub hint");wn.style.color="#fcd34d";b.append(wn);note();
+  const s2=secBox(b,"Что видят другие");
+  tog(s2,"hideSeen","Скрыть «в сети»","Другие увидят «был(а) недавно».");
+  seg(s2,"pvBday","День рождения",[["all","Все"],["friends","Друзья"],["none","Никто"]]);
+  b.append(h("p","sub hint","Почту видишь только ты. Имя, @юзернейм, аватар, баннер и описание видны всем."));
 })}
 function pgData(){page("Данные и память",b=>{
   const s=secBox(b,"На этом устройстве");
@@ -1221,12 +1448,13 @@ function pgData(){page("Данные и память",b=>{
 })}
 function pgAbout(){page("О MAQW",b=>{
   const c=h("div","sec glass col");c.style.cssText="padding:20px;text-align:center";
-  const l=h("div","logo");l.style.margin="0 auto";l.className="logo img";l.style.width=l.style.height="76px";l.innerHTML='<img src="icons/icon-192.png" alt="">';
-  c.append(l,h("h3","","MAQW 2.3"),h("div","vtag","Что нового"));b.append(c);
+  const l=h("div","logo");l.style.margin="0 auto";l.className="logo img";l.style.width=l.style.height="76px";l.innerHTML='<img src="icons/icon-192.png?v=4" alt="">';
+  c.append(l,h("h3","","MAQW 2.4"),h("div","vtag","Что нового"));b.append(c);
   const g=h("div","sgrp glass");
-  [["clip","linear-gradient(135deg,#a78bfa,#7c3aed)","Подпись к вложениям","Выбери фото, видео, музыку или файл, напиши текст и отправь всё одним сообщением. Перед отправкой вложения можно убрать."],
-   ["users","linear-gradient(135deg,#60a5fa,#2563eb)","Лимиты на создание","Можно создать до 5 каналов и до 11 групп."],
-   ["palette","linear-gradient(135deg,#f0abfc,#c026d3)","Новая шапка","Логотип и название по центру, они показываются только в разделе «Чаты»."]
+  [["userplus","linear-gradient(135deg,#4ade80,#16a34a)","Заявки в друзья","Отправляй заявки из профиля, принимай их во вкладке «Контакты». Включи «Писать мне могут только друзья», и незнакомые не смогут тебе написать."],
+   ["lock","linear-gradient(135deg,#a78bfa,#7c3aed)","Больше приватности","В «Конфиденциальности» можно закрыть личные сообщения, отключить заявки и выбрать, кто видит день рождения."],
+   ["smile","linear-gradient(135deg,#fbbf24,#f97316)","Реакции как в Telegram","Выбор реакций над сообщением, раскрывающийся список из 40 реакций, одна реакция от человека и яркие плашки под сообщением."],
+   ["image","linear-gradient(135deg,#9ca3af,#374151)","Новая иконка","Свежий логотип MAQW в приложении и на главном экране."]
   ].forEach(([ic,col,t,d])=>{const r=h("div","sr2 nc"),i=h("div","sic");i.innerHTML=SV(ic);i.style.background=col;const x=h("div","grow");x.append(h("b","",t),h("div","sub wrap",d));r.append(i,x);g.append(r)});
   b.append(g);
 })}
