@@ -1,13 +1,13 @@
 /* MAQW service worker: оболочка приложения работает офлайн, обновляется сама */
-const VER = "maqw-v1";
+const VER = "maqw-v4";
 const SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png",
-  "./icons/apple-touch-icon.png",
-  "./icons/favicon-32.png"
+  "./icons/icon-192.png?v=4",
+  "./icons/icon-512.png?v=4",
+  "./icons/apple-touch-icon.png?v=4",
+  "./icons/favicon-32.png?v=4"
 ];
 
 self.addEventListener("install", e => {
